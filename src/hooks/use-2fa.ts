@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
-import * as OTPAuth from "otpauth";
 
 export interface TwoFactorAccount {
   id: string;
   secret: string;
   issuer: string;
   label: string;
-  tags: string[]; // Changed from colorTag to string array
-  token?: string;
-  period?: number;
-  remaining?: number;
+  tags: string[];
 }
 
-const STORAGE_KEY = "2fa_accounts_v2"; // Bump version for migration
+const STORAGE_KEY = "2fa_accounts_v2";
 
 export function use2FA() {
   const [accounts, setAccounts] = useState<TwoFactorAccount[]>([]);
@@ -27,78 +23,35 @@ export function use2FA() {
         setAccounts(parsed);
         // Extract all unique tags
         const tags = new Set<string>();
-        parsed.forEach((acc: TwoFactorAccount) => acc.tags?.forEach(t => tags.add(t)));
+        parsed.forEach((acc: TwoFactorAccount) => acc.tags?.forEach((t: string) => tags.add(t)));
         setAvailableTags(Array.from(tags));
       } catch (e) {
         console.error("Failed to parse 2FA accounts", e);
       }
-    } else {
-        // Migration attempt from v1 (optional, but good for DX)
-        const oldStored = localStorage.getItem("2fa_accounts_v1");
-        if (oldStored) {
-            try {
-                const oldData = JSON.parse(oldStored);
-                // Map old colorTag to a tag if needed, or just empty
-                const migrated = oldData.map((d: any) => ({
-                    ...d,
-                    tags: d.colorTag && d.colorTag !== 'default' ? [d.colorTag] : []
-                }));
-                setAccounts(migrated);
-                persist(migrated);
-            } catch(e) {}
-        }
     }
   }, []);
 
   // 2. Helper to save
   const persist = (newAccounts: TwoFactorAccount[]) => {
+    // Clean up data before saving (remove any dynamic props if they exist)
     const dataToSave = newAccounts.map(({ id, secret, issuer, label, tags }) => ({
       id,
       secret,
       issuer,
       label,
-      tags,
+      tags: tags || [],
     }));
+    
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-    setAccounts(newAccounts);
+    setAccounts(dataToSave);
     
     // Update available tags
     const tags = new Set<string>();
-    newAccounts.forEach(acc => acc.tags?.forEach(t => tags.add(t)));
+    dataToSave.forEach(acc => acc.tags?.forEach(t => tags.add(t)));
     setAvailableTags(Array.from(tags));
   };
 
-  // 3. Timer
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAccounts((prev) => [...prev]);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // 4. Compute tokens
-  const accountsWithTokens = accounts.map((account) => {
-    try {
-      const totp = new OTPAuth.TOTP({
-        issuer: account.issuer,
-        label: account.label,
-        algorithm: "SHA1",
-        digits: 6,
-        period: 30,
-        secret: OTPAuth.Secret.fromBase32(account.secret),
-      });
-
-      const token = totp.generate();
-      const period = 30;
-      const remaining = period - (Math.floor(Date.now() / 1000) % period);
-
-      return { ...account, token, period, remaining };
-    } catch (e) {
-      return { ...account, token: "ERROR", period: 30, remaining: 0 };
-    }
-  });
-
-  const addAccount = (account: Omit<TwoFactorAccount, "id" | "token" | "period" | "remaining">) => {
+  const addAccount = (account: Omit<TwoFactorAccount, "id">) => {
     const newAccount = {
       ...account,
       id: crypto.randomUUID(),
@@ -121,7 +74,7 @@ export function use2FA() {
 
   const importAccounts = (newAccounts: Partial<TwoFactorAccount>[]) => {
     const validAccounts = newAccounts
-      .filter(a => a.secret && a.label) // Basic validation
+      .filter(a => a.secret && a.label)
       .map(a => ({
         id: crypto.randomUUID(),
         secret: a.secret || "",
@@ -130,7 +83,6 @@ export function use2FA() {
         tags: a.tags || [],
       })) as TwoFactorAccount[];
 
-    // Avoid duplicates based on Secret Key
     const existingSecrets = new Set(accounts.map(a => a.secret));
     const uniqueNewAccounts = validAccounts.filter(a => !existingSecrets.has(a.secret));
 
@@ -142,12 +94,20 @@ export function use2FA() {
     return 0;
   };
 
+  const reorderAccounts = (newOrder: TwoFactorAccount[]) => {
+    // Optimistic update
+    setAccounts(newOrder);
+    // Debounce save if needed, but for now direct persist is fine as long as we don't re-render parent too much
+    persist(newOrder);
+  };
+
   return {
-    accounts: accountsWithTokens,
+    accounts,
     availableTags,
     addAccount,
     removeAccount,
     updateAccount,
     importAccounts,
+    reorderAccounts,
   };
 }

@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { Toaster } from "sonner";
-import { ThemeProvider } from "@/components/theme-provider";
-import { ModeToggle } from "@/components/mode-toggle";
-import { AddAccountForm } from "@/components/add-account-form";
-import { AccountRow } from "@/components/account-row";
 import { DataBackup } from "@/components/data-backup";
 import { HelpDialog } from "@/components/help-dialog";
 import { use2FA } from "@/hooks/use-2fa";
 import { ShieldCheck, FilterX, Sparkles } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Reorder } from "framer-motion";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ModeToggle } from "@/components/mode-toggle";
+import { AddAccountForm } from "@/components/add-account-form";
+import { AccountRow } from "@/components/account-row";
+import { Toaster } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 function TwoFactorApp() {
-  const { accounts, availableTags, addAccount, removeAccount, updateAccount, importAccounts } = use2FA();
+  const { accounts, availableTags, addAccount, removeAccount, updateAccount, importAccounts, reorderAccounts } = use2FA();
   const [filterTag, setFilterTag] = useState<string | null>(null);
 
   const filteredAccounts = filterTag 
@@ -28,27 +28,27 @@ function TwoFactorApp() {
        <div className="fixed bottom-0 right-0 -z-10 h-[500px] w-[500px] bg-blue-500/10 rounded-full blur-[100px] opacity-50 pointer-events-none translate-x-[50%] translate-y-[50%]"></div>
 
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
-        <div className="container flex h-16 items-center justify-between mx-auto px-4 max-w-5xl">
+        <div className="container flex h-14 md:h-16 items-center justify-between mx-auto px-4 max-w-5xl">
           <motion.div 
-            className="flex items-center gap-3 cursor-pointer group"
+            className="flex items-center gap-2 md:gap-3 cursor-pointer group"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="relative flex items-center justify-center h-10 w-10 bg-gradient-to-br from-primary to-blue-600 rounded-xl text-white shadow-[0_0_20px_-5px_rgba(var(--primary),0.5)] group-hover:shadow-primary/40 transition-shadow duration-300">
-               <ShieldCheck className="h-6 w-6" />
+            <div className="relative flex items-center justify-center h-8 w-8 md:h-10 md:w-10 bg-gradient-to-br from-primary to-blue-600 rounded-lg md:rounded-xl text-white shadow-[0_0_20px_-5px_rgba(var(--primary),0.5)] group-hover:shadow-primary/40 transition-shadow duration-300">
+               <ShieldCheck className="h-5 w-5 md:h-6 md:w-6" />
                <motion.div 
-                 className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                 className="absolute inset-0 rounded-lg md:rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"
                  initial={false}
                  animate={{ scale: [1, 1.2, 1], opacity: [0, 0.2, 0] }}
                  transition={{ repeat: Infinity, duration: 2 }}
                />
             </div>
-            <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
+            <span className="font-bold text-lg md:text-xl tracking-tight bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
                 Authenticator
             </span>
           </motion.div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2">
              <HelpDialog />
              <DataBackup accounts={accounts} onImport={importAccounts} />
              <ModeToggle />
@@ -125,17 +125,36 @@ function TwoFactorApp() {
                      <button onClick={() => setFilterTag(null)} className="text-primary hover:underline text-sm font-medium">Clear filter</button>
                  </div>
              ) : (
-                <AnimatePresence mode="popLayout">
-                  {filteredAccounts.map((account) => (
-                    <AccountRow 
-                      key={account.id} 
-                      account={account} 
-                      onRemove={removeAccount}
-                      onUpdate={updateAccount}
-                      availableTags={availableTags}
-                    />
-                  ))}
-                </AnimatePresence>
+                <>
+                {/* Use Reorder.Group ONLY when showing all accounts (no filter) */}
+                {filterTag === null ? (
+                    <Reorder.Group axis="y" values={accounts} onReorder={reorderAccounts} className="space-y-3">
+                        {accounts.map((account) => (
+                            <AccountRow 
+                                key={account.id} 
+                                account={account} 
+                                onRemove={removeAccount}
+                                onUpdate={updateAccount}
+                                availableTags={availableTags}
+                                isDraggable={true}
+                            />
+                        ))}
+                    </Reorder.Group>
+                ) : (
+                    <AnimatePresence mode="popLayout">
+                        {filteredAccounts.map((account) => (
+                            <AccountRow 
+                                key={account.id} 
+                                account={account} 
+                                onRemove={removeAccount}
+                                onUpdate={updateAccount}
+                                availableTags={availableTags}
+                                isDraggable={false}
+                            />
+                        ))}
+                    </AnimatePresence>
+                )}
+                </>
              )}
         </div>
       </main>
