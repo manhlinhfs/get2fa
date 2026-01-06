@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Download, Upload, Settings2, FileJson } from "lucide-react";
+import { Download, Upload, Settings2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,

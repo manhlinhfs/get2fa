@@ -7,7 +7,7 @@ import { AccountRow } from "@/components/account-row";
 import { DataBackup } from "@/components/data-backup";
 import { HelpDialog } from "@/components/help-dialog";
 import { use2FA } from "@/hooks/use-2fa";
-import { ShieldCheck, FilterX, Tag as TagIcon, Sparkles } from "lucide-react";
+import { ShieldCheck, FilterX, Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -126,7 +126,7 @@ function TwoFactorApp() {
                  </div>
              ) : (
                 <AnimatePresence mode="popLayout">
-                  {filteredAccounts.map((account, index) => (
+                  {filteredAccounts.map((account) => (
                     <AccountRow 
                       key={account.id} 
                       account={account} 

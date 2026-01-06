@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Copy, Trash2, Pencil, CheckCircle2 } from "lucide-react";
+import { Trash2, Pencil, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import type { TwoFactorAccount } from "@/hooks/use-2fa";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
   AlertDialog,

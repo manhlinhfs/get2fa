@@ -14,7 +14,6 @@ interface AddAccountFormProps {
 }
 
 export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
   const [label, setLabel] = useState("");
   const [secret, setSecret] = useState("");
   const [tagInput, setTagInput] = useState("");
