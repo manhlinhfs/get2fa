@@ -1,70 +1,79 @@
-# Authenticator - Secure 2FA Web App
+# 🔐 TOTP Client - Secure Local 2FA
 
-A modern, privacy-focused, and secure 2FA (TOTP) authenticator web application. This tool allows you to manage your two-factor authentication codes directly in your browser with a beautiful Glassmorphism UI.
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+![Status](https://img.shields.io/badge/Status-Production-success)
+![Security](https://img.shields.io/badge/Security-Client--Side-violet)
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![React](https://img.shields.io/badge/react-2023-blue.svg)
-![Vite](https://img.shields.io/badge/vite-6.0-purple.svg)
-![Bun](https://img.shields.io/badge/bun-1.1-black.svg)
+A **professional, privacy-first** Two-Factor Authentication (TOTP) web application. Designed with a stunning **Glassmorphism UI** and focused on absolute data sovereignty.
 
-## ✨ Key Features
+## ✨ Highlights
 
-- **Privacy First**: 100% Client-side. Your data never leaves your browser.
-- **Modern UI/UX**: Beautiful Glassmorphism design with smooth Framer Motion animations.
-- **Smart Input**: Automatic paste from clipboard for service names and secrets.
-- **Real-time TOTP**: Accurate countdown with visual alerts when codes are about to expire.
-- **Flexible Tagging**: Organize your codes with custom tags and quick filtering.
-- **Backup & Restore**: Export your data to a JSON file and restore it anytime.
-- **Dark Mode**: Built-in support for light and dark themes.
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-You need to have [Bun](https://bun.sh/) installed on your machine.
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/manhlinhfs/2fa.rawcode.io.git
-   cd 2fa.rawcode.io
-   ```
-
-2. Install dependencies:
-   ```bash
-   bun install
-   ```
-
-3. Start the development server:
-   ```bash
-   bun run dev
-   ```
-
-4. Build for production:
-   ```bash
-   bun run build
-   ```
-
-## 🛡️ Security & Storage
-
-This application uses **LocalStorage** to store your 2FA secrets.
-- **No Cloud Sync**: Your data is NOT synced to any server.
-- **Data Loss Risk**: Clearing browser cache or switching browsers will result in data loss.
-- **Recommended**: Always use the **Export Backup** feature in the settings menu to keep a physical copy of your data in a safe place.
-
-## 🛠️ Built With
-
-- [React](https://reactjs.org/) - Frontend framework
-- [Vite](https://vitejs.dev/) - Build tool
-- [Tailwind CSS](https://tailwindcss.com/) - Styling
-- [Shadcn UI](https://ui.shadcn.com/) - UI Components
-- [Framer Motion](https://www.framer.com/motion/) - Animations
-- [OTPAuth](https://github.com/hectorm/otpauth) - TOTP Logic
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+*   🛡️ **100% Client-Side**: Logic runs entirely in your browser. No data is sent to any server.
+*   🎨 **Modern UI**: Polished Glassmorphism design with **JetBrains Mono** typography.
+*   ⚡ **Drag & Drop**: Reorder your accounts intuitively.
+*   🚀 **Performance**: Optimized rendering, zero lag.
+*   📦 **Backup & Restore**: Secure JSON import/export functionality.
+*   🌗 **Dark Mode**: Fully supported system-aware theming.
 
 ---
-Built with ❤️ for a more secure web.
+
+## 🛠️ Tech Stack
+
+*   **Framework**: React 18 + Vite
+*   **Language**: TypeScript
+*   **Runtime**: Bun
+*   **Styling**: TailwindCSS v4 + Shadcn UI
+*   **Animation**: Framer Motion
+
+---
+
+## 🚀 Deployment (Ubuntu + PM2)
+
+This guide assumes you have **Bun** and **PM2** installed.
+
+### 1. Setup & Build
+```bash
+# Clone repository
+git clone https://github.com/manhlinhfs/totp-client.git
+cd totp-client
+
+# Install dependencies
+bun install
+
+# Build for production
+bun run build
+```
+
+### 2. Run with PM2 (Recommended)
+We use PM2 to serve the static files with **SPA support** (Single Page Application).
+
+```bash
+# Start the application on port 3333
+pm2 serve dist 3333 --spa --name "totp-client"
+
+# Save PM2 list to respawn on reboot
+pm2 save
+pm2 startup
+```
+
+### 3. Update Application
+To update to the latest version:
+```bash
+git pull origin master
+bun run build
+pm2 restart totp-client
+```
+
+---
+
+## ⚠️ Security Notice
+
+*   **Local Storage**: Data is stored in your browser's `localStorage`.
+*   **Data Loss**: Clearing browser cache **WILL** delete your codes.
+*   **Recommendation**: Always **Export Backup** immediately after adding new accounts and store the file securely (e.g., Encrypted Cloud, USB).
+
+---
+
+<p align="center">
+  Built with ❤️ for a safer web.
+</p>
