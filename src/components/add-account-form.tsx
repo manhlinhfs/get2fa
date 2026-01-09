@@ -30,10 +30,13 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
     }
   });
 
-  const handlePaste = async (setter: (val: string) => void) => {
+  const handlePaste = async (setter: (val: string) => void, checkDuplicatesWith?: string) => {
     try {
       const text = await navigator.clipboard.readText();
       if (text) {
+        if (checkDuplicatesWith && text === checkDuplicatesWith) {
+           return; // Do nothing if pasting the same content as secret
+        }
         setter(text);
         toast.success("Pasted from clipboard");
       }
@@ -162,7 +165,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                                     placeholder="Service Name (e.g. Google, Facebook)"
                                     value={label}
                                     onChange={(e) => setLabel(e.target.value)}
-                                    onClick={() => !label && handlePaste(setLabel)}
+                                    onClick={() => !label && handlePaste(setLabel, secret)}
                                     className="h-12 bg-background/40 border-border/50 focus:border-primary/50 focus:bg-background/60 transition-all text-base pl-12 pr-10 rounded-2xl"
                                     />
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
@@ -171,7 +174,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                                     <Button
                                         type="button" variant="ghost" size="icon" 
                                         className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground h-8 w-8"
-                                        onClick={() => handlePaste(setLabel)}
+                                        onClick={() => handlePaste(setLabel, secret)}
                                     >
                                         <ClipboardPaste className="h-4 w-4" />
                                     </Button>

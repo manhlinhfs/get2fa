@@ -2,7 +2,7 @@ import { useState } from "react";
 import { DataBackup } from "@/components/data-backup";
 import { HelpDialog } from "@/components/help-dialog";
 import { use2FA } from "@/hooks/use-2fa";
-import { ShieldCheck, FilterX, Sparkles } from "lucide-react";
+import { FilterX, Sparkles } from "lucide-react";
 import { AnimatePresence, motion, Reorder } from "framer-motion";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -11,14 +11,40 @@ import { AccountRow } from "@/components/account-row";
 import { Toaster } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
 
 function TwoFactorApp() {
   const { accounts, availableTags, addAccount, removeAccount, updateAccount, importAccounts, reorderAccounts } = use2FA();
   const [filterTag, setFilterTag] = useState<string | null>(null);
+  const [tagSearch, setTagSearch] = useState("");
+
+  // Calculate popular tags (top 3)
+  const popularTags = accounts.reduce((acc, account) => {
+    account.tags?.forEach(tag => {
+      acc[tag] = (acc[tag] || 0) + 1;
+    });
+    return acc;
+  }, {} as Record<string, number>);
+
+  const topTags = Object.entries(popularTags)
+    .sort(([, a], [, b]) => b - a) // Sort by count descending
+    .slice(0, 3) // Take top 3
+    .map(([tag]) => tag);
 
   const filteredAccounts = filterTag 
     ? accounts.filter(a => a.tags?.includes(filterTag)) 
     : accounts;
+
+  const filteredTagsForSearch = availableTags.filter(tag => 
+    tag.toLowerCase().includes(tagSearch.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen relative font-sans selection:bg-primary/30 overflow-hidden">
@@ -34,10 +60,10 @@ function TwoFactorApp() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="relative flex items-center justify-center h-8 w-8 md:h-10 md:w-10 bg-gradient-to-br from-primary to-blue-600 rounded-lg md:rounded-xl text-white shadow-[0_0_20px_-5px_rgba(var(--primary),0.5)] group-hover:shadow-primary/40 transition-shadow duration-300">
-               <ShieldCheck className="h-5 w-5 md:h-6 md:w-6" />
+            <div className="relative flex items-center justify-center h-8 w-8 md:h-10 md:w-10 bg-background/50 border border-border/50 rounded-lg md:rounded-xl shadow-sm group-hover:shadow-primary/20 transition-all duration-300">
+               <img src="/icon.png" alt="App Logo" className="h-5 w-5 md:h-6 md:w-6 object-contain" />
                <motion.div 
-                 className="absolute inset-0 rounded-lg md:rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                 className="absolute inset-0 rounded-lg md:rounded-xl bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"
                  initial={false}
                  animate={{ scale: [1, 1.2, 1], opacity: [0, 0.2, 0] }}
                  transition={{ repeat: Infinity, duration: 2 }}
@@ -64,42 +90,59 @@ function TwoFactorApp() {
 
         {/* Filter Section */}
         {availableTags.length > 0 && (
-            <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide py-2"
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-3 py-2 flex-wrap"
+          >
+            <Combobox
+              value={filterTag}
+              onValueChange={(val) => {
+                setFilterTag(val);
+                setTagSearch(""); // Reset search on select
+              }}
+              inputValue={tagSearch}
+              onInputValueChange={setTagSearch}
             >
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border/50 backdrop-blur-sm text-xs font-medium text-muted-foreground shrink-0">
-                    <FilterX className="h-3.5 w-3.5" />
-                    Filters
-                </div>
-                
-                <Badge 
-                    variant={filterTag === null ? "default" : "secondary"}
+              <ComboboxInput
+                placeholder="Filter by tag..."
+                className="w-full sm:w-[250px]"
+                showClear={!!filterTag}
+              />
+              <ComboboxContent>
+                <ComboboxList>
+                  <ComboboxEmpty>No tags found.</ComboboxEmpty>
+                  {filteredTagsForSearch.map((tag) => (
+                    <ComboboxItem key={tag} value={tag}>
+                      {tag}
+                    </ComboboxItem>
+                  ))}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
+
+            {/* Popular Tags Quick Access */}
+            {topTags.length > 0 && (
+              <div className="flex items-center gap-2 border-l border-border/40 pl-3 ml-1 overflow-x-auto scrollbar-hide">
+                <span className="text-xs text-muted-foreground font-medium hidden sm:inline-block whitespace-nowrap">Popular:</span>
+                {topTags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="secondary"
                     className={cn(
-                        "cursor-pointer transition-all shrink-0 px-4 py-1.5 h-auto text-xs hover:shadow-md", 
-                        filterTag === null ? "bg-primary text-primary-foreground shadow-primary/20" : "bg-card hover:bg-card/80 border border-border/50"
+                      "cursor-pointer transition-all hover:shadow-sm whitespace-nowrap",
+                      filterTag === tag 
+                        ? "bg-primary/10 text-primary border-primary/20 shadow-[0_0_10px_-3px_var(--primary)]" 
+                        : "bg-background hover:bg-muted border border-border/50 text-muted-foreground hover:text-foreground"
                     )}
-                    onClick={() => setFilterTag(null)}
-                >
-                    All
-                </Badge>
-                {availableTags.map((tag) => (
-                    <Badge
-                        key={tag}
-                        variant="secondary"
-                        className={cn(
-                            "cursor-pointer transition-all shrink-0 px-4 py-1.5 h-auto text-xs hover:shadow-md border border-transparent", 
-                            filterTag === tag 
-                                ? "bg-primary/10 text-primary border-primary/20 shadow-[0_0_10px_-3px_var(--primary)]" 
-                                : "bg-card hover:bg-card/80 border-border/50 text-muted-foreground"
-                        )}
-                        onClick={() => setFilterTag(tag === filterTag ? null : tag)}
-                    >
-                        {tag}
-                    </Badge>
+                    onClick={() => setFilterTag(tag === filterTag ? null : tag)}
+                  >
+                    {tag}
+                  </Badge>
                 ))}
-            </motion.div>
+              </div>
+            )}
+          </motion.div>
         )}
 
         {/* List Section */}
