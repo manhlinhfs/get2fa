@@ -253,7 +253,7 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
                     <AlertDialogTitle>{t('account_row.delete_title')}</AlertDialogTitle>
                     <AlertDialogDescription>
                         <Trans i18nKey="account_row.delete_desc" values={{ label: account.label }}>
-                            Are you sure you want to remove <span className="font-bold text-foreground">{{ label: account.label }}</span>? This action cannot be undone.
+                            Are you sure you want to remove <span className="font-bold text-foreground">{account.label}</span>? This action cannot be undone.
                         </Trans>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
