@@ -1,37 +1,53 @@
-# 🔐 TOTP Client - Ứng dụng 2FA Cục bộ Bảo mật
+# 🔐 TOTP Client - Trình Tạo Mã 2FA Bảo Mật
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Status](https://img.shields.io/badge/Status-Production-success)
 ![Security](https://img.shields.io/badge/Security-Client--Side-violet)
+![PWA](https://img.shields.io/badge/PWA-Supported-orange)
 
 [🇺🇸 English](./README.md) | [🇻🇳 Tiếng Việt](./README.vi.md)
 
-Một ứng dụng web Xác thực Hai Yếu tố (TOTP) **chuyên nghiệp, ưu tiên quyền riêng tư**. Được thiết kế với giao diện **Glassmorphism** tuyệt đẹp và tập trung vào quyền sở hữu dữ liệu tuyệt đối.
+Một ứng dụng tạo mã xác thực hai bước (TOTP) **chuyên nghiệp, bảo mật**, đặt quyền riêng tư lên hàng đầu. Được thiết kế với giao diện **Glassmorphism** đẹp mắt.
 
-## ✨ Điểm nổi bật
+## ✨ Tính Năng Nổi Bật
 
-*   🛡️ **100% Client-Side**: Logic chạy hoàn toàn trong trình duyệt của bạn. Không có dữ liệu nào được gửi đến bất kỳ máy chủ nào.
-*   🎨 **Giao diện Hiện đại**: Thiết kế Glassmorphism trau chuốt với phông chữ **JetBrains Mono**.
-*   ⚡ **Kéo & Thả**: Sắp xếp lại các tài khoản của bạn một cách trực quan.
-*   🚀 **Hiệu suất**: Hiển thị tối ưu, không độ trễ.
-*   📦 **Sao lưu & Khôi phục**: Chức năng nhập/xuất JSON an toàn.
-*   🌗 **Chế độ Tối**: Hỗ trợ đầy đủ giao diện theo hệ thống.
+*   🛡️ **100% Client-Side**: Mọi xử lý diễn ra ngay trên trình duyệt của bạn. Không có dữ liệu nào được gửi đến máy chủ.
+*   📱 **Hỗ trợ PWA**: Có thể cài đặt trên Máy tính/Điện thoại và hoạt động **100% Offline** (Không cần mạng).
+*   🌍 **Đa ngôn ngữ**: Hỗ trợ **Tiếng Anh, Tiếng Việt, Trung, Tây Ban Nha, Nhật, Đức, Pháp**. Tự động nhận diện ngôn ngữ máy.
+*   🎨 **Giao diện Hiện đại**: Thiết kế kính mờ (Glassmorphism) với font chữ **JetBrains Mono**.
+*   ⚡ **Kéo & Thả**: Sắp xếp thứ tự tài khoản dễ dàng.
+*   🚀 **Hiệu năng cao**: Tối ưu hóa, không giật lag.
+*   📦 **Sao lưu & Khôi phục**: Xuất/Nhập dữ liệu an toàn qua file JSON.
+*   🌗 **Giao diện Tối**: Hỗ trợ Dark Mode theo hệ thống.
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## 🛠️ Công Nghệ Sử Dụng
 
 *   **Framework**: React 18 + Vite
-*   **Ngôn ngữ**: TypeScript
+*   **Language**: TypeScript
 *   **Runtime**: Bun
-*   **Kiểu dáng**: TailwindCSS v4 + Shadcn UI
-*   **Hoạt ảnh**: Framer Motion
+*   **Styling**: TailwindCSS v4 + Shadcn UI
+*   **Animation**: Framer Motion
+*   **PWA**: Vite Plugin PWA
+*   **i18n**: i18next
 
 ---
 
-## 🚀 Triển khai (Ubuntu + PM2)
+## 📲 Progressive Web App (PWA)
 
-Hướng dẫn này giả định bạn đã cài đặt **Bun** và **PM2**.
+Ứng dụng này là PWA, nghĩa là bạn có thể cài đặt nó như một ứng dụng thông thường (Native App).
+
+*   **Hoạt động Offline**: Xem mã 2FA ngay cả khi không có mạng Internet.
+*   **Cài trên Chrome/Edge**: Nhấn vào biểu tượng "Cài đặt" trên thanh địa chỉ (Góc phải).
+*   **Cài trên iOS**: Safari > Chia sẻ (Share) > "Thêm vào Màn hình chính" (Add to Home Screen).
+*   **Cài trên Android**: Chrome > Menu > "Cài đặt ứng dụng" (Install App).
+
+---
+
+## 🚀 Triển Khai (Ubuntu + PM2)
+
+Hướng dẫn này giả định bạn đã cài **Bun** và **PM2**.
 
 ### 1. Cài đặt & Build
 ```bash
@@ -39,18 +55,18 @@ Hướng dẫn này giả định bạn đã cài đặt **Bun** và **PM2**.
 git clone https://github.com/manhlinhfs/totp-client.git
 cd totp-client
 
-# Cài đặt dependencies
+# Cài đặt thư viện
 bun install
 
-# Build cho production
+# Build bản production
 bun run build
 ```
 
 ### 2. Chạy với PM2 (Khuyên dùng)
-Chúng tôi sử dụng PM2 để phục vụ các tệp tĩnh với **hỗ trợ SPA** (Single Page Application).
+Sử dụng PM2 để serve file tĩnh với chế độ **SPA support**.
 
 ```bash
-# Khởi chạy ứng dụng trên cổng 3333
+# Chạy ứng dụng ở port 3333
 pm2 serve dist 3333 --spa --name "totp-client"
 
 # Lưu danh sách PM2 để tự khởi động lại khi reboot
@@ -58,8 +74,8 @@ pm2 save
 pm2 startup
 ```
 
-### 3. Cập nhật Ứng dụng
-Để cập nhật lên phiên bản mới nhất:
+### 3. Cập nhật ứng dụng
+Để cập nhật phiên bản mới nhất:
 ```bash
 git pull origin master
 bun run build
@@ -68,14 +84,14 @@ pm2 restart totp-client
 
 ---
 
-## ⚠️ Lưu ý Bảo mật
+## ⚠️ Lưu Ý Bảo Mật
 
-*   **Local Storage**: Dữ liệu được lưu trữ trong `localStorage` của trình duyệt.
-*   **Mất dữ liệu**: Xóa cache trình duyệt **SẼ** xóa các mã của bạn.
-*   **Khuyến nghị**: Luôn **Xuất Sao lưu** ngay sau khi thêm tài khoản mới và lưu trữ tệp an toàn (ví dụ: Cloud mã hóa, USB).
+*   **Local Storage**: Dữ liệu được lưu trong `localStorage` của trình duyệt.
+*   **Mất Dữ Liệu**: Xóa cache/lịch sử duyệt web **SẼ** xóa mất mã của bạn.
+*   **Khuyến Nghị**: Luôn **Xuất Sao Lưu (Export Backup)** ngay sau khi thêm tài khoản mới và lưu file ở nơi an toàn (Cloud mã hóa, USB).
 
 ---
 
 <p align="center">
-  Được xây dựng với ❤️ vì một web an toàn hơn.
+  Built with ❤️ for a safer web.
 </p>

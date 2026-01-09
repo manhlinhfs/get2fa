@@ -3,6 +3,7 @@
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Status](https://img.shields.io/badge/Status-Production-success)
 ![Security](https://img.shields.io/badge/Security-Client--Side-violet)
+![PWA](https://img.shields.io/badge/PWA-Supported-orange)
 
 [🇺🇸 English](./README.md) | [🇻🇳 Tiếng Việt](./README.vi.md)
 
@@ -11,6 +12,8 @@ A **professional, privacy-first** Two-Factor Authentication (TOTP) web applicati
 ## ✨ Highlights
 
 *   🛡️ **100% Client-Side**: Logic runs entirely in your browser. No data is sent to any server.
+*   📱 **PWA Support**: Installable on Desktop/Mobile and works **100% Offline**.
+*   🌍 **Multi-language**: Supports **English, Vietnamese, Chinese, Spanish, Japanese, German, and French**. Auto-detects user preference.
 *   🎨 **Modern UI**: Polished Glassmorphism design with **JetBrains Mono** typography.
 *   ⚡ **Drag & Drop**: Reorder your accounts intuitively.
 *   🚀 **Performance**: Optimized rendering, zero lag.
@@ -26,6 +29,19 @@ A **professional, privacy-first** Two-Factor Authentication (TOTP) web applicati
 *   **Runtime**: Bun
 *   **Styling**: TailwindCSS v4 + Shadcn UI
 *   **Animation**: Framer Motion
+*   **PWA**: Vite Plugin PWA
+*   **i18n**: i18next
+
+---
+
+## 📲 Progressive Web App (PWA)
+
+This app is a PWA, meaning you can install it on your device for a native-like experience.
+
+*   **Offline Capable**: Access your codes even without an internet connection.
+*   **Install on Chrome/Edge**: Click the "Install" icon in the address bar (Right side).
+*   **Install on iOS**: Safari > Share > "Add to Home Screen".
+*   **Install on Android**: Chrome > Menu > "Install App".
 
 ---
 
