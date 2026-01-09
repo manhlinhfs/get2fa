@@ -4,6 +4,8 @@
 ![Status](https://img.shields.io/badge/Status-Production-success)
 ![Security](https://img.shields.io/badge/Security-Client--Side-violet)
 
+[🇺🇸 English](./README.md) | [🇻🇳 Tiếng Việt](./README.vi.md)
+
 A **professional, privacy-first** Two-Factor Authentication (TOTP) web application. Designed with a stunning **Glassmorphism UI** and focused on absolute data sovereignty.
 
 ## ✨ Highlights
