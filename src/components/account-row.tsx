@@ -17,6 +17,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { EditAccountDialog } from "@/components/edit-account-dialog";
+import { useTranslation, Trans } from "react-i18next";
 
 interface AccountRowProps {
   account: TwoFactorAccount;
@@ -27,6 +28,7 @@ interface AccountRowProps {
 }
 
 export function AccountRow({ account, onRemove, onUpdate, availableTags, isDraggable = false }: AccountRowProps) {
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [justCopied, setJustCopied] = useState(false);
@@ -81,7 +83,7 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
     const rawToken = token.replace(/\s/g, "");
     if (rawToken && rawToken !== "ERROR") {
       navigator.clipboard.writeText(rawToken);
-      toast.success("Copied code to clipboard");
+      toast.success(t('account_row.copied'));
       setJustCopied(true);
       setTimeout(() => setJustCopied(false), 2000);
     }
@@ -228,7 +230,7 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
                     >
                         <div className="flex flex-col items-center gap-2 text-green-500">
                             <CheckCircle2 className="h-8 w-8" />
-                            <span className="font-bold text-sm">Copied!</span>
+                            <span className="font-bold text-sm">{t('account_row.copied_short')}</span>
                         </div>
                     </motion.div>
                 )}
@@ -248,16 +250,17 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
         <AlertDialog open={isDeleting} onOpenChange={setIsDeleting}>
             <AlertDialogContent className="bg-background/95 backdrop-blur-md border-border/50">
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Delete Account</AlertDialogTitle>
+                    <AlertDialogTitle>{t('account_row.delete_title')}</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to remove <span className="font-bold text-foreground">{account.label}</span>? 
-                        <br/>This action cannot be undone.
+                        <Trans i18nKey="account_row.delete_desc" values={{ label: account.label }}>
+                            Are you sure you want to remove <span className="font-bold text-foreground">{{ label: account.label }}</span>? This action cannot be undone.
+                        </Trans>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel className="border-border/50 hover:bg-muted/50">Cancel</AlertDialogCancel>
+                    <AlertDialogCancel className="border-border/50 hover:bg-muted/50">{t('common.cancel')}</AlertDialogCancel>
                     <AlertDialogAction onClick={() => onRemove(account.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                        Delete
+                        {t('common.delete')}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

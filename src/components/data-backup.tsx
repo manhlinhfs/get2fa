@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import type { TwoFactorAccount } from "@/hooks/use-2fa";
+import { useTranslation } from "react-i18next";
 
 interface DataBackupProps {
   accounts: TwoFactorAccount[];
@@ -18,11 +19,12 @@ interface DataBackupProps {
 }
 
 export function DataBackup({ accounts, onImport }: DataBackupProps) {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
     if (accounts.length === 0) {
-      toast.error("No data to export");
+      toast.error(t('backup.no_data'));
       return;
     }
 
@@ -50,9 +52,9 @@ export function DataBackup({ accounts, onImport }: DataBackupProps) {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       
-      toast.success("Backup downloaded successfully");
+      toast.success(t('backup.export_success'));
     } catch (error) {
-      toast.error("Failed to export data");
+      toast.error(t('backup.export_error'));
     }
   };
 
@@ -84,12 +86,12 @@ export function DataBackup({ accounts, onImport }: DataBackupProps) {
         const count = onImport(accountsToImport);
         
         if (count > 0) {
-            toast.success(`Successfully imported ${count} accounts`);
+            toast.success(t('backup.import_success', { count }));
         } else {
-            toast.info("No new accounts found to import (duplicates skipped)");
+            toast.info(t('backup.import_info'));
         }
       } catch (error) {
-        toast.error("Invalid backup file");
+        toast.error(t('backup.import_error'));
         console.error(error);
       } finally {
         if (fileInputRef.current) {
@@ -116,15 +118,15 @@ export function DataBackup({ accounts, onImport }: DataBackupProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur-xl">
-          <DropdownMenuLabel>Data Management</DropdownMenuLabel>
+          <DropdownMenuLabel>{t('backup.title')}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleExport} className="cursor-pointer">
             <Download className="mr-2 h-4 w-4" />
-            <span>Export Backup</span>
+            <span>{t('backup.export')}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleImportClick} className="cursor-pointer">
             <Upload className="mr-2 h-4 w-4" />
-            <span>Import Backup</span>
+            <span>{t('backup.import')}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

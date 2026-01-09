@@ -1,0 +1,55 @@
+{
+  "app": { "title": "Authenticator", "ready": "Bereit, Ihr digitales Leben zu sichern.", "enter_key": "Geben Sie oben einen geheimen Schlüssel ein, um Ihren ersten 2FA-Code zu generieren." },
+  "filter": { "placeholder": "Nach Tag filtern...", "no_tags": "Keine Tags gefunden.", "popular": "Beliebt:", "no_match": "Keine Konten entsprechen dem Tag:", "clear": "Filter löschen" },
+  "common": { 
+    "language": "Sprache", "theme": "Thema", "help": "Hilfe", "backup": "Datensicherung",
+    "cancel": "Abbrechen", "save": "Speichern", "delete": "Löschen", "edit": "Bearbeiten", "tags": "Tags", "add_tag": "Tag hinzufügen..."
+  },
+  "add_form": {
+    "paste_secret_expanded": "Fügen Sie hier Ihren geheimen Schlüssel ein",
+    "paste_secret_collapsed": "2FA-Geheimschlüssel einfügen, um neuen hinzuzufügen...",
+    "paste_clipboard": "Aus der Zwischenablage eingefügt",
+    "clipboard_error": "Zugriff auf Zwischenablage verweigert",
+    "service_placeholder": "Dienstname (z.B. Google, Facebook)",
+    "add_tags_placeholder": "Tags hinzufügen...",
+    "save_authenticator": "Authenticator speichern",
+    "success": "Konto erfolgreich hinzugefügt"
+  },
+  "account_row": {
+    "copied": "Code in die Zwischenablage kopiert",
+    "copied_short": "Kopiert!",
+    "delete_title": "Konto löschen",
+    "delete_desc": "Sind Sie sicher, dass Sie <1>{{label}}</1> entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+  },
+  "edit_dialog": {
+    "title": "Konto bearbeiten",
+    "account_name": "Kontoname",
+    "secret_key": "Geheimer Schlüssel",
+    "save_changes": "Änderungen speichern"
+  },
+  "help_dialog": {
+    "title": "Wichtiger Sicherheitshinweis",
+    "subtitle": "Verstehen Sie, wie Ihre Daten gespeichert werden und wie Sie sie schützen können.",
+    "storage_title": "Nur lokaler Speicher",
+    "storage_desc": "Ihre 2FA-Codes werden <1>direkt in diesem Browser</1> (localStorage) gespeichert. Wir laden Ihre Daten <3>NICHT</3> auf einen Cloud-Server hoch. Dies gewährleistet maximale Privatsphäre, birgt jedoch Risiken.",
+    "risk_title": "Risiko von Datenverlust",
+    "risk_desc": "Sie verlieren ALLE Ihre Codes, wenn Sie:",
+    "risk_1": "Browser-Cache/Cookies oder Verlauf löschen.",
+    "risk_2": "Diesen Browser deinstallieren oder Windows/MacOS neu installieren.",
+    "risk_3": "Den \"Inkognito/Privat\"-Modus verwenden (Daten verschwinden beim Schließen).",
+    "risk_4": "Ihr Gerät zurücksetzen.",
+    "rec_title": "Unsere Empfehlung",
+    "rec_desc": "Verwenden Sie immer sofort nach dem Hinzufügen neuer Konten die Funktion <1>Einstellungen {{icon}} > Backup exportieren</1>. Bewahren Sie die Backup-Datei an einem sicheren Ort auf (Cloud, USB)."
+  },
+  "backup": {
+    "title": "Datenverwaltung",
+    "export": "Backup exportieren",
+    "import": "Backup importieren",
+    "no_data": "Keine Daten zum Exportieren",
+    "export_success": "Backup erfolgreich heruntergeladen",
+    "export_error": "Fehler beim Exportieren der Daten",
+    "import_success": "{{count}} Konten erfolgreich importiert",
+    "import_info": "Keine neuen Konten zum Importieren gefunden (Duplikate übersprungen)",
+    "import_error": "Ungültige Backup-Datei"
+  }
+}

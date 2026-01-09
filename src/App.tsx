@@ -6,11 +6,13 @@ import { FilterX, Sparkles } from "lucide-react";
 import { AnimatePresence, motion, Reorder } from "framer-motion";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
 import { AddAccountForm } from "@/components/add-account-form";
 import { AccountRow } from "@/components/account-row";
 import { Toaster } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import {
   Combobox,
   ComboboxContent,
@@ -21,6 +23,7 @@ import {
 } from "@/components/ui/combobox";
 
 function TwoFactorApp() {
+  const { t } = useTranslation();
   const { accounts, availableTags, addAccount, removeAccount, updateAccount, importAccounts, reorderAccounts } = use2FA();
   const [filterTag, setFilterTag] = useState<string | null>(null);
   const [tagSearch, setTagSearch] = useState("");
@@ -70,11 +73,12 @@ function TwoFactorApp() {
                />
             </div>
             <span className="font-bold text-lg md:text-xl tracking-tight bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
-                Authenticator
+                {t('app.title')}
             </span>
           </motion.div>
           
           <div className="flex items-center gap-1 md:gap-2">
+             <LanguageToggle />
              <HelpDialog />
              <DataBackup accounts={accounts} onImport={importAccounts} />
              <ModeToggle />
@@ -105,13 +109,13 @@ function TwoFactorApp() {
               onInputValueChange={setTagSearch}
             >
               <ComboboxInput
-                placeholder="Filter by tag..."
+                placeholder={t('filter.placeholder')}
                 className="w-full sm:w-[250px]"
                 showClear={!!filterTag}
               />
               <ComboboxContent>
                 <ComboboxList>
-                  <ComboboxEmpty>No tags found.</ComboboxEmpty>
+                  <ComboboxEmpty>{t('filter.no_tags')}</ComboboxEmpty>
                   {filteredTagsForSearch.map((tag) => (
                     <ComboboxItem key={tag} value={tag}>
                       {tag}
@@ -124,7 +128,7 @@ function TwoFactorApp() {
             {/* Popular Tags Quick Access */}
             {topTags.length > 0 && (
               <div className="flex items-center gap-2 border-l border-border/40 pl-3 ml-1 overflow-x-auto scrollbar-hide">
-                <span className="text-xs text-muted-foreground font-medium hidden sm:inline-block whitespace-nowrap">Popular:</span>
+                <span className="text-xs text-muted-foreground font-medium hidden sm:inline-block whitespace-nowrap">{t('filter.popular')}</span>
                 {topTags.map((tag) => (
                   <Badge
                     key={tag}
@@ -157,15 +161,15 @@ function TwoFactorApp() {
                         <Sparkles className="h-8 w-8 text-muted-foreground/50" />
                     </div>
                     <div className="space-y-1">
-                        <p className="text-muted-foreground max-w-xs mx-auto font-medium">Ready to secure your digital life.</p>
-                        <p className="text-xs text-muted-foreground/60">Enter a secret key above to generate your first 2FA code.</p>
+                        <p className="text-muted-foreground max-w-xs mx-auto font-medium">{t('app.ready')}</p>
+                        <p className="text-xs text-muted-foreground/60">{t('app.enter_key')}</p>
                     </div>
                  </motion.div>
              ) : filteredAccounts.length === 0 ? (
                  <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
                      <FilterX className="h-12 w-12 opacity-20" />
-                     <p>No accounts match tag: <span className="font-semibold text-foreground">{filterTag}</span></p>
-                     <button onClick={() => setFilterTag(null)} className="text-primary hover:underline text-sm font-medium">Clear filter</button>
+                     <p>{t('filter.no_match')} <span className="font-semibold text-foreground">{filterTag}</span></p>
+                     <button onClick={() => setFilterTag(null)} className="text-primary hover:underline text-sm font-medium">{t('filter.clear')}</button>
                  </div>
              ) : (
                 <>

@@ -1,0 +1,55 @@
+{
+  "app": { "title": "Autenticador", "ready": "Listo para asegurar su vida digital.", "enter_key": "Ingrese una clave secreta arriba para generar su primer código 2FA." },
+  "filter": { "placeholder": "Filtrar por etiqueta...", "no_tags": "No se encontraron etiquetas.", "popular": "Popular:", "no_match": "Ninguna cuenta coincide con la etiqueta:", "clear": "Borrar filtro" },
+  "common": { 
+    "language": "Idioma", "theme": "Tema", "help": "Ayuda", "backup": "Copia de seguridad",
+    "cancel": "Cancelar", "save": "Guardar", "delete": "Eliminar", "edit": "Editar", "tags": "Etiquetas", "add_tag": "Añadir etiqueta..."
+  },
+  "add_form": {
+    "paste_secret_expanded": "Pegue su clave secreta aquí",
+    "paste_secret_collapsed": "Pegue la clave secreta 2FA para agregar nuevo...",
+    "paste_clipboard": "Pegado desde el portapapeles",
+    "clipboard_error": "Acceso al portapapeles denegado",
+    "service_placeholder": "Nombre del servicio (ej. Google, Facebook)",
+    "add_tags_placeholder": "Añadir etiquetas...",
+    "save_authenticator": "Guardar Autenticador",
+    "success": "Cuenta añadida con éxito"
+  },
+  "account_row": {
+    "copied": "Código copiado al portapapeles",
+    "copied_short": "¡Copiado!",
+    "delete_title": "Eliminar cuenta",
+    "delete_desc": "¿Está seguro de que desea eliminar <1>{{label}}</1>? Esta acción no se puede deshacer."
+  },
+  "edit_dialog": {
+    "title": "Editar cuenta",
+    "account_name": "Nombre de la cuenta",
+    "secret_key": "Clave secreta",
+    "save_changes": "Guardar cambios"
+  },
+  "help_dialog": {
+    "title": "Aviso de seguridad importante",
+    "subtitle": "Comprender cómo se almacenan sus datos y cómo protegerlos.",
+    "storage_title": "Solo almacenamiento local",
+    "storage_desc": "Sus códigos 2FA se almacenan <1>directamente en este navegador</1> (localStorage). <3>NO</3> subimos sus datos a ningún servidor en la nube. Esto garantiza la máxima privacidad pero conlleva riesgos.",
+    "risk_title": "Riesgo de pérdida de datos",
+    "risk_desc": "Perderá TODOS sus códigos si:",
+    "risk_1": "Borra la caché/cookies o el historial del navegador.",
+    "risk_2": "Desinstala este navegador o reinstala Windows/MacOS.",
+    "risk_3": "Usa el modo \"Incógnito/Privado\" (los datos desaparecen al cerrar).",
+    "risk_4": "Restablece su dispositivo.",
+    "rec_title": "Nuestra recomendación",
+    "rec_desc": "Utilice siempre la función <1>Configuración {{icon}} > Exportar copia de seguridad</1> inmediatamente después de agregar nuevas cuentas. Guarde el archivo de copia de seguridad en un lugar seguro (Nube, USB)."
+  },
+  "backup": {
+    "title": "Gestión de datos",
+    "export": "Exportar copia de seguridad",
+    "import": "Importar copia de seguridad",
+    "no_data": "No hay datos para exportar",
+    "export_success": "Copia de seguridad descargada con éxito",
+    "export_error": "Error al exportar datos",
+    "import_success": "Se importaron {{count}} cuentas con éxito",
+    "import_info": "No se encontraron nuevas cuentas para importar (se omitieron duplicados)",
+    "import_error": "Archivo de copia de seguridad no válido"
+  }
+}

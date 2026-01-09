@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useOnClickOutside } from "usehooks-ts";
+import { useTranslation } from "react-i18next";
 
 interface AddAccountFormProps {
   onAdd: (account: Omit<TwoFactorAccount, "id">) => void;
@@ -15,6 +16,7 @@ interface AddAccountFormProps {
 }
 
 export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [label, setLabel] = useState("");
   const [secret, setSecret] = useState("");
@@ -38,10 +40,10 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
            return; // Do nothing if pasting the same content as secret
         }
         setter(text);
-        toast.success("Pasted from clipboard");
+        toast.success(t('add_form.paste_clipboard'));
       }
     } catch (err) {
-      toast.error("Clipboard access denied");
+      toast.error(t('add_form.clipboard_error'));
     }
   };
 
@@ -88,7 +90,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
     });
 
     handleCancel(); // Close and reset
-    toast.success("Account added successfully");
+    toast.success(t('add_form.success'));
   };
 
   return (
@@ -107,7 +109,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                 <div className="relative">
                     <Input
                         id="secret"
-                        placeholder={isExpanded ? "Paste your Secret Key here" : "Paste 2FA Secret Key to add new..."}
+                        placeholder={isExpanded ? t('add_form.paste_secret_expanded') : t('add_form.paste_secret_collapsed')}
                         value={secret}
                         onChange={(e) => setSecret(e.target.value)}
                         onFocus={() => setIsExpanded(true)}
@@ -162,7 +164,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                                 <div className="relative">
                                     <Input
                                     id="label"
-                                    placeholder="Service Name (e.g. Google, Facebook)"
+                                    placeholder={t('add_form.service_placeholder')}
                                     value={label}
                                     onChange={(e) => setLabel(e.target.value)}
                                     onClick={() => !label && handlePaste(setLabel, secret)}
@@ -204,7 +206,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                                     </AnimatePresence>
                                     <input 
                                         className="flex-1 bg-transparent outline-none text-sm min-w-[80px] placeholder:text-muted-foreground/50 ml-1 h-6"
-                                        placeholder={tags.length === 0 ? "Add tags..." : ""}
+                                        placeholder={tags.length === 0 ? t('add_form.add_tags_placeholder') : ""}
                                         value={tagInput}
                                         onChange={(e) => setTagInput(e.target.value)}
                                         onKeyDown={handleKeyDown}
@@ -235,7 +237,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                                     className="flex-1 h-12 rounded-xl border-border/50 hover:bg-background/50"
                                     onClick={handleCancel}
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </Button>
                                 <Button 
                                     type="submit" 
@@ -245,7 +247,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                                         !secret ? "opacity-50 cursor-not-allowed" : "hover:shadow-primary/40 hover:-translate-y-0.5"
                                     )}
                                 >
-                                    <Save className="h-5 w-5" /> Save Authenticator
+                                    <Save className="h-5 w-5" /> {t('add_form.save_authenticator')}
                                 </Button>
                             </div>
                         </div>

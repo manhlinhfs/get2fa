@@ -1,0 +1,73 @@
+{
+  "app": {
+    "title": "Authenticator",
+    "ready": "Ready to secure your digital life.",
+    "enter_key": "Enter a secret key above to generate your first 2FA code."
+  },
+  "filter": {
+    "placeholder": "Filter by tag...",
+    "no_tags": "No tags found.",
+    "popular": "Popular:",
+    "no_match": "No accounts match tag:",
+    "clear": "Clear filter"
+  },
+  "common": {
+    "language": "Language",
+    "theme": "Theme",
+    "help": "Help",
+    "backup": "Data Backup",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "tags": "Tags",
+    "add_tag": "Add tag..."
+  },
+  "add_form": {
+    "paste_secret_expanded": "Paste your Secret Key here",
+    "paste_secret_collapsed": "Paste 2FA Secret Key to add new...",
+    "paste_clipboard": "Pasted from clipboard",
+    "clipboard_error": "Clipboard access denied",
+    "service_placeholder": "Service Name (e.g. Google, Facebook)",
+    "add_tags_placeholder": "Add tags...",
+    "save_authenticator": "Save Authenticator",
+    "success": "Account added successfully"
+  },
+  "account_row": {
+    "copied": "Copied code to clipboard",
+    "copied_short": "Copied!",
+    "delete_title": "Delete Account",
+    "delete_desc": "Are you sure you want to remove <1>{{label}}</1>? This action cannot be undone."
+  },
+  "edit_dialog": {
+    "title": "Edit Account",
+    "account_name": "Account Name",
+    "secret_key": "Secret Key",
+    "save_changes": "Save Changes"
+  },
+  "help_dialog": {
+    "title": "Important Security Notice",
+    "subtitle": "Understanding how your data is stored and how to protect it.",
+    "storage_title": "Local Storage Only",
+    "storage_desc": "Your 2FA codes are stored <1>directly on this browser</1> (localStorage). We do <3>NOT</3> upload your data to any cloud server. This ensures maximum privacy but comes with risks.",
+    "risk_title": "Risk of Data Loss",
+    "risk_desc": "You will lose ALL your codes if you:",
+    "risk_1": "Clear browser cache/cookies or history.",
+    "risk_2": "Uninstall this browser or reinstall Windows/MacOS.",
+    "risk_3": "Use \"Incognito/Private\" mode (data vanishes on close).",
+    "risk_4": "Reset your device.",
+    "rec_title": "Our Recommendation",
+    "rec_desc": "Always use the <1>Settings {{icon}} > Export Backup</1> feature immediately after adding new accounts. Keep the backup file in a safe place (Cloud, USB)."
+  },
+  "backup": {
+    "title": "Data Management",
+    "export": "Export Backup",
+    "import": "Import Backup",
+    "no_data": "No data to export",
+    "export_success": "Backup downloaded successfully",
+    "export_error": "Failed to export data",
+    "import_success": "Successfully imported {{count}} accounts",
+    "import_info": "No new accounts found to import (duplicates skipped)",
+    "import_error": "Invalid backup file"
+  }
+}

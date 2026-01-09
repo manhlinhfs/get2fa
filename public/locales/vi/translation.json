@@ -1,0 +1,73 @@
+{
+  "app": {
+    "title": "Trình Xác Thực",
+    "ready": "Sẵn sàng bảo vệ cuộc sống số của bạn.",
+    "enter_key": "Nhập mã bí mật ở trên để tạo mã 2FA đầu tiên."
+  },
+  "filter": {
+    "placeholder": "Lọc theo thẻ...",
+    "no_tags": "Không tìm thấy thẻ.",
+    "popular": "Phổ biến:",
+    "no_match": "Không có tài khoản nào khớp với thẻ:",
+    "clear": "Xóa bộ lọc"
+  },
+  "common": {
+    "language": "Ngôn ngữ",
+    "theme": "Giao diện",
+    "help": "Trợ giúp",
+    "backup": "Sao lưu dữ liệu",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "tags": "Thẻ",
+    "add_tag": "Thêm thẻ..."
+  },
+  "add_form": {
+    "paste_secret_expanded": "Dán khóa bí mật của bạn vào đây",
+    "paste_secret_collapsed": "Dán khóa bí mật 2FA để thêm mới...",
+    "paste_clipboard": "Đã dán từ bộ nhớ tạm",
+    "clipboard_error": "Truy cập bộ nhớ tạm bị từ chối",
+    "service_placeholder": "Tên dịch vụ (vd: Google, Facebook)",
+    "add_tags_placeholder": "Thêm thẻ...",
+    "save_authenticator": "Lưu Trình xác thực",
+    "success": "Đã thêm tài khoản thành công"
+  },
+  "account_row": {
+    "copied": "Đã sao chép mã vào bộ nhớ tạm",
+    "copied_short": "Đã sao chép!",
+    "delete_title": "Xóa tài khoản",
+    "delete_desc": "Bạn có chắc chắn muốn xóa <1>{{label}}</1>? Hành động này không thể hoàn tác."
+  },
+  "edit_dialog": {
+    "title": "Chỉnh sửa tài khoản",
+    "account_name": "Tên tài khoản",
+    "secret_key": "Khóa bí mật",
+    "save_changes": "Lưu thay đổi"
+  },
+  "help_dialog": {
+    "title": "Thông báo bảo mật quan trọng",
+    "subtitle": "Hiểu cách dữ liệu của bạn được lưu trữ và cách bảo vệ nó.",
+    "storage_title": "Chỉ lưu trữ cục bộ",
+    "storage_desc": "Mã 2FA của bạn được lưu trữ <1>trực tiếp trên trình duyệt này</1> (localStorage). Chúng tôi <3>KHÔNG</3> tải dữ liệu của bạn lên bất kỳ máy chủ đám mây nào. Điều này đảm bảo quyền riêng tư tối đa nhưng đi kèm với rủi ro.",
+    "risk_title": "Rủi ro mất dữ liệu",
+    "risk_desc": "Bạn sẽ mất TẤT CẢ các mã nếu bạn:",
+    "risk_1": "Xóa bộ nhớ cache/cookie hoặc lịch sử duyệt web.",
+    "risk_2": "Gỡ cài đặt trình duyệt này hoặc cài đặt lại Windows/MacOS.",
+    "risk_3": "Sử dụng chế độ \"Ẩn danh\" (dữ liệu biến mất khi đóng).",
+    "risk_4": "Khôi phục cài đặt gốc thiết bị.",
+    "rec_title": "Khuyến nghị của chúng tôi",
+    "rec_desc": "Luôn sử dụng tính năng <1>Cài đặt {{icon}} > Xuất sao lưu</1> ngay sau khi thêm tài khoản mới. Giữ tệp sao lưu ở nơi an toàn (Đám mây, USB)."
+  },
+  "backup": {
+    "title": "Quản lý dữ liệu",
+    "export": "Xuất sao lưu",
+    "import": "Nhập sao lưu",
+    "no_data": "Không có dữ liệu để xuất",
+    "export_success": "Đã tải xuống bản sao lưu thành công",
+    "export_error": "Xuất dữ liệu thất bại",
+    "import_success": "Đã nhập thành công {{count}} tài khoản",
+    "import_info": "Không tìm thấy tài khoản mới để nhập (đã bỏ qua bản trùng lặp)",
+    "import_error": "Tệp sao lưu không hợp lệ"
+  }
+}

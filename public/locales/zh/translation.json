@@ -1,0 +1,55 @@
+{
+  "app": { "title": "身份验证器", "ready": "准备保护您的数字生活。", "enter_key": "在上方输入密钥以生成您的第一个 2FA 代码。" },
+  "filter": { "placeholder": "按标签筛选...", "no_tags": "未找到标签。", "popular": "流行:", "no_match": "没有帐户匹配标签:", "clear": "清除筛选" },
+  "common": { 
+    "language": "语言", "theme": "主题", "help": "帮助", "backup": "数据备份",
+    "cancel": "取消", "save": "保存", "delete": "删除", "edit": "编辑", "tags": "标签", "add_tag": "添加标签..."
+  },
+  "add_form": {
+    "paste_secret_expanded": "在此处粘贴您的密钥",
+    "paste_secret_collapsed": "粘贴 2FA 密钥以添加新...",
+    "paste_clipboard": "已从剪贴板粘贴",
+    "clipboard_error": "剪贴板访问被拒绝",
+    "service_placeholder": "服务名称（例如 Google, Facebook）",
+    "add_tags_placeholder": "添加标签...",
+    "save_authenticator": "保存身份验证器",
+    "success": "帐户添加成功"
+  },
+  "account_row": {
+    "copied": "代码已复制到剪贴板",
+    "copied_short": "已复制！",
+    "delete_title": "删除帐户",
+    "delete_desc": "您确定要删除 <1>{{label}}</1> 吗？此操作无法撤消。"
+  },
+  "edit_dialog": {
+    "title": "编辑帐户",
+    "account_name": "帐户名称",
+    "secret_key": "密钥",
+    "save_changes": "保存更改"
+  },
+  "help_dialog": {
+    "title": "重要安全须知",
+    "subtitle": "了解您的数据如何存储以及如何保护它。",
+    "storage_title": "仅本地存储",
+    "storage_desc": "您的 2FA 代码直接存储在<1>此浏览器</1>中 (localStorage)。我们<3>不</3>会将您的数据上传到任何云服务器。这确保了最大的隐私，但也伴随着风险。",
+    "risk_title": "数据丢失风险",
+    "risk_desc": "如果发生以下情况，您将丢失所有代码：",
+    "risk_1": "清除浏览器缓存/Cookie 或历史记录。",
+    "risk_2": "卸载此浏览器或重新安装 Windows/MacOS。",
+    "risk_3": "使用“隐身/私人”模式（关闭时数据消失）。",
+    "risk_4": "重置您的设备。",
+    "rec_title": "我们的建议",
+    "rec_desc": "添加新帐户后，请务必立即使用<1>设置 {{icon}} > 导出备份</1>功能。将备份文件保存在安全的地方（云端，USB）。"
+  },
+  "backup": {
+    "title": "数据管理",
+    "export": "导出备份",
+    "import": "导入备份",
+    "no_data": "没有要导出的数据",
+    "export_success": "备份下载成功",
+    "export_error": "导出数据失败",
+    "import_success": "成功导入 {{count}} 个帐户",
+    "import_info": "未找到要导入的新帐户（已跳过重复项）",
+    "import_error": "备份文件无效"
+  }
+}

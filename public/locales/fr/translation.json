@@ -1,0 +1,55 @@
+{
+  "app": { "title": "Authentificateur", "ready": "Prêt à sécuriser votre vie numérique.", "enter_key": "Entrez une clé secrète ci-dessus pour générer votre premier code 2FA." },
+  "filter": { "placeholder": "Filtrer par étiquette...", "no_tags": "Aucune étiquette trouvée.", "popular": "Populaire:", "no_match": "Aucun compte ne correspond à l'étiquette:", "clear": "Effacer le filtre" },
+  "common": { 
+    "language": "Langue", "theme": "Thème", "help": "Aide", "backup": "Sauvegarde des données",
+    "cancel": "Annuler", "save": "Enregistrer", "delete": "Supprimer", "edit": "Modifier", "tags": "Étiquettes", "add_tag": "Ajouter une étiquette..."
+  },
+  "add_form": {
+    "paste_secret_expanded": "Collez votre clé secrète ici",
+    "paste_secret_collapsed": "Collez la clé secrète 2FA pour ajouter...",
+    "paste_clipboard": "Collé depuis le presse-papiers",
+    "clipboard_error": "Accès au presse-papiers refusé",
+    "service_placeholder": "Nom du service (ex. Google, Facebook)",
+    "add_tags_placeholder": "Ajouter des étiquettes...",
+    "save_authenticator": "Enregistrer l'authentificateur",
+    "success": "Compte ajouté avec succès"
+  },
+  "account_row": {
+    "copied": "Code copié dans le presse-papiers",
+    "copied_short": "Copié !",
+    "delete_title": "Supprimer le compte",
+    "delete_desc": "Êtes-vous sûr de vouloir supprimer <1>{{label}}</1> ? Cette action est irréversible."
+  },
+  "edit_dialog": {
+    "title": "Modifier le compte",
+    "account_name": "Nom du compte",
+    "secret_key": "Clé secrète",
+    "save_changes": "Enregistrer les modifications"
+  },
+  "help_dialog": {
+    "title": "Avis de sécurité important",
+    "subtitle": "Comprendre comment vos données sont stockées et comment les protéger.",
+    "storage_title": "Stockage local uniquement",
+    "storage_desc": "Vos codes 2FA sont stockés <1>directement sur ce navigateur</1> (localStorage). Nous ne téléchargeons <3>PAS</3> vos données sur un serveur cloud. Cela garantit une confidentialité maximale mais comporte des risques.",
+    "risk_title": "Risque de perte de données",
+    "risk_desc": "Vous perdrez TOUS vos codes si vous :",
+    "risk_1": "Effacez le cache/cookies ou l'historique du navigateur.",
+    "risk_2": "Désinstallez ce navigateur ou réinstallez Windows/MacOS.",
+    "risk_3": "Utilisez le mode \"Incognito/Privé\" (les données disparaissent à la fermeture).",
+    "risk_4": "Réinitialisez votre appareil.",
+    "rec_title": "Notre recommandation",
+    "rec_desc": "Utilisez toujours la fonction <1>Paramètres {{icon}} > Exporter la sauvegarde</1> immédiatement après l'ajout de nouveaux comptes. Conservez le fichier de sauvegarde dans un endroit sûr (Cloud, clé USB)."
+  },
+  "backup": {
+    "title": "Gestion des données",
+    "export": "Exporter la sauvegarde",
+    "import": "Importer la sauvegarde",
+    "no_data": "Aucune donnée à exporter",
+    "export_success": "Sauvegarde téléchargée avec succès",
+    "export_error": "Échec de l'exportation des données",
+    "import_success": "{{count}} comptes importés avec succès",
+    "import_info": "Aucun nouveau compte trouvé à importer (doublons ignorés)",
+    "import_error": "Fichier de sauvegarde invalide"
+  }
+}
