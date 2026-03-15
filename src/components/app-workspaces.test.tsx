@@ -1,8 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import App from "@/App";
+import { AccountRow } from "@/components/account-row";
 import type { AppData } from "@/lib/get2fa-data";
 
 const translations: Record<string, string> = {
@@ -330,8 +331,6 @@ describe("workspace app ui", () => {
   });
 
   it("persists reordered accounts after drag end", async () => {
-    const user = userEvent.setup();
-
     seedAppData({
       version: 1,
       currentWorkspaceId: "default",
@@ -444,5 +443,54 @@ describe("workspace app ui", () => {
         "github",
       ]);
     });
+  });
+
+  it("updates countdown state from a shared clock source", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-15T00:00:29.000Z"));
+
+    const setIntervalSpy = vi.spyOn(window, "setInterval");
+
+    render(
+      <>
+        <AccountRow
+          account={{
+            id: "github",
+            secret: "JBSWY3DPEHPK3PXP",
+            issuer: "GitHub",
+            label: "GitHub",
+            tags: ["work"],
+            createdAt: "2026-03-15T00:00:00.000Z",
+            updatedAt: "2026-03-15T00:00:00.000Z",
+          }}
+          availableTags={["work"]}
+          onRemove={vi.fn()}
+          onUpdate={vi.fn()}
+        />
+        <AccountRow
+          account={{
+            id: "aws",
+            secret: "JBSWY3DPEHPK3PXP",
+            issuer: "AWS",
+            label: "AWS",
+            tags: ["cloud"],
+            createdAt: "2026-03-15T00:00:00.000Z",
+            updatedAt: "2026-03-15T00:00:00.000Z",
+          }}
+          availableTags={["cloud"]}
+          onRemove={vi.fn()}
+          onUpdate={vi.fn()}
+        />
+      </>,
+    );
+
+    expect(setIntervalSpy).toHaveBeenCalledTimes(1);
+    expect(screen.getAllByText("1s")).toHaveLength(2);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1000);
+    });
+
+    expect(screen.getAllByText("30s")).toHaveLength(2);
   });
 });

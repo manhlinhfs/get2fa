@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, Pencil, CheckCircle2, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import type { TwoFactorAccount } from "@/lib/get2fa-data";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useTotpClock } from "@/hooks/use-totp-clock";
 import * as OTPAuth from "otpauth";
 import {
   AlertDialog,
@@ -44,11 +45,7 @@ export function AccountRow({
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [justCopied, setJustCopied] = useState(false);
-  
-  // Local state for TOTP to prevent global re-renders
-  const [token, setToken] = useState("--- ---");
-  const [remaining, setRemaining] = useState(30);
-  const [period, setPeriod] = useState(30);
+  const currentEpochSecond = useTotpClock();
 
   const totp = useMemo(() => {
     try {
@@ -65,34 +62,29 @@ export function AccountRow({
     }
   }, [account.secret, account.label, account.issuer]);
 
-  // Timer Logic Isolated to this Component
-  useEffect(() => {
+  const timestamp = currentEpochSecond * 1000;
+  const period = totp?.period ?? 30;
+  const displayToken = useMemo(() => {
     if (!totp) {
-      return;
+      return "ERROR";
     }
 
-    const update = () => {
-        try {
-            const newToken = totp.generate();
-            const newPeriod = 30;
-            const newRemaining = newPeriod - (Math.floor(Date.now() / 1000) % newPeriod);
-            
-            setToken(`${newToken.slice(0, 3)} ${newToken.slice(3)}`);
-            setRemaining(newRemaining);
-            setPeriod(newPeriod);
-        } catch {
-            setToken("ERROR");
-        }
-    };
+    try {
+      const token = totp.generate({ timestamp });
+      return `${token.slice(0, 3)} ${token.slice(3)}`;
+    } catch {
+      return "ERROR";
+    }
+  }, [timestamp, totp]);
+  const remaining = useMemo(() => {
+    if (!totp) {
+      return 0;
+    }
 
-    update(); // Initial run
-    const interval = setInterval(update, 1000);
-    return () => clearInterval(interval);
-  }, [totp]); // Only re-init if account details change
-
-  const displayToken = totp ? token : "ERROR";
+    return Math.ceil(totp.remaining({ timestamp }) / 1000);
+  }, [timestamp, totp]);
   const progress = totp ? remaining / period : 0;
-  const isExpiring = totp ? remaining < 5 : true;
+  const isExpiring = totp ? remaining < Math.min(5, period) : true;
   const dragHandleLabel = t("account_row.drag_handle", { label: account.label }).replace(
     "{{label}}",
     account.label,
