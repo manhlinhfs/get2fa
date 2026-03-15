@@ -1,5 +1,5 @@
 {
-  "app": { "title": "認証システム", "ready": "デジタルライフを守る準備ができました。", "enter_key": "上にシークレットキーを入力して、最初の2FAコードを生成してください。" },
+  "app": { "title": "get2fa", "ready": "デジタルライフを守る準備ができました。", "enter_key": "上にシークレットキーを入力して、最初の2FAコードを生成してください。" },
   "filter": { "placeholder": "タグでフィルタリング...", "no_tags": "タグが見つかりません。", "popular": "人気:", "no_match": "タグに一致するアカウントはありません:", "clear": "フィルタをクリア" },
   "common": { 
     "language": "言語", "theme": "テーマ", "help": "ヘルプ", "backup": "データバックアップ",
@@ -12,7 +12,7 @@
     "clipboard_error": "クリップボードへのアクセスが拒否されました",
     "service_placeholder": "サービス名 (例: Google, Facebook)",
     "add_tags_placeholder": "タグを追加...",
-    "save_authenticator": "認証システムを保存",
+    "save_authenticator": "アカウントを保存",
     "success": "アカウントが正常に追加されました"
   },
   "account_row": {

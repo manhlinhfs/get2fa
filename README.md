@@ -1,4 +1,4 @@
-# 🔐 TOTP Client - Secure Local 2FA
+# 🔐 get2fa - Secure Local TOTP Workspaces
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Status](https://img.shields.io/badge/Status-Production-success)
@@ -7,7 +7,7 @@
 
 [🇺🇸 English](./README.md) | [🇻🇳 Tiếng Việt](./README.vi.md)
 
-A **professional, privacy-first** Two-Factor Authentication (TOTP) web application. Designed with a stunning **Glassmorphism UI** and focused on absolute data sovereignty.
+`get2fa` is a **privacy-first** TOTP workspace app that keeps your codes local, organized, and installable across desktop and mobile.
 
 ## ✨ Highlights
 
@@ -17,7 +17,8 @@ A **professional, privacy-first** Two-Factor Authentication (TOTP) web applicati
 *   🎨 **Modern UI**: Polished Glassmorphism design with **JetBrains Mono** typography.
 *   ⚡ **Drag & Drop**: Reorder your accounts intuitively.
 *   🚀 **Performance**: Optimized rendering, zero lag.
-*   📦 **Backup & Restore**: Secure JSON import/export functionality.
+*   🗂️ **Workspaces**: Separate vault-style workspaces for personal, work, and project codes.
+*   📦 **Backup & Restore**: Secure JSON import/export for one or multiple workspaces.
 *   🌗 **Dark Mode**: Fully supported system-aware theming.
 
 ---
@@ -52,8 +53,8 @@ This guide assumes you have **Bun** and **PM2** installed.
 ### 1. Setup & Build
 ```bash
 # Clone repository
-git clone https://github.com/manhlinhfs/totp-client.git
-cd totp-client
+git clone https://github.com/manhlinhfs/totp-client.git get2fa
+cd get2fa
 
 # Install dependencies
 bun install
@@ -67,7 +68,7 @@ We use PM2 to serve the static files with **SPA support** (Single Page Applicati
 
 ```bash
 # Start the application on port 3333
-pm2 serve dist 3333 --spa --name "totp-client"
+pm2 serve dist 3333 --spa --name "get2fa"
 
 # Save PM2 list to respawn on reboot
 pm2 save
@@ -79,7 +80,7 @@ To update to the latest version:
 ```bash
 git pull origin master
 bun run build
-pm2 restart totp-client
+pm2 restart get2fa
 ```
 
 ---

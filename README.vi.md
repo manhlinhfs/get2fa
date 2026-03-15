@@ -1,4 +1,4 @@
-# 🔐 TOTP Client - Trình Tạo Mã 2FA Bảo Mật
+# 🔐 get2fa - Không Gian Làm Việc TOTP Bảo Mật Cục Bộ
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Status](https://img.shields.io/badge/Status-Production-success)
@@ -7,7 +7,7 @@
 
 [🇺🇸 English](./README.md) | [🇻🇳 Tiếng Việt](./README.vi.md)
 
-Một ứng dụng tạo mã xác thực hai bước (TOTP) **chuyên nghiệp, bảo mật**, đặt quyền riêng tư lên hàng đầu. Được thiết kế với giao diện **Glassmorphism** đẹp mắt.
+`get2fa` là ứng dụng TOTP ưu tiên quyền riêng tư, giúp bạn quản lý mã theo workspace riêng và lưu toàn bộ dữ liệu ngay trên thiết bị.
 
 ## ✨ Tính Năng Nổi Bật
 
@@ -17,7 +17,8 @@ Một ứng dụng tạo mã xác thực hai bước (TOTP) **chuyên nghiệp, 
 *   🎨 **Giao diện Hiện đại**: Thiết kế kính mờ (Glassmorphism) với font chữ **JetBrains Mono**.
 *   ⚡ **Kéo & Thả**: Sắp xếp thứ tự tài khoản dễ dàng.
 *   🚀 **Hiệu năng cao**: Tối ưu hóa, không giật lag.
-*   📦 **Sao lưu & Khôi phục**: Xuất/Nhập dữ liệu an toàn qua file JSON.
+*   🗂️ **Workspace riêng biệt**: Tách mã theo cá nhân, công việc hoặc từng dự án.
+*   📦 **Sao lưu & Khôi phục**: Xuất/Nhập dữ liệu an toàn cho một hoặc nhiều workspace qua file JSON.
 *   🌗 **Giao diện Tối**: Hỗ trợ Dark Mode theo hệ thống.
 
 ---
@@ -52,8 +53,8 @@ Hướng dẫn này giả định bạn đã cài **Bun** và **PM2**.
 ### 1. Cài đặt & Build
 ```bash
 # Clone repository
-git clone https://github.com/manhlinhfs/totp-client.git
-cd totp-client
+git clone https://github.com/manhlinhfs/totp-client.git get2fa
+cd get2fa
 
 # Cài đặt thư viện
 bun install
@@ -67,7 +68,7 @@ Sử dụng PM2 để serve file tĩnh với chế độ **SPA support**.
 
 ```bash
 # Chạy ứng dụng ở port 3333
-pm2 serve dist 3333 --spa --name "totp-client"
+pm2 serve dist 3333 --spa --name "get2fa"
 
 # Lưu danh sách PM2 để tự khởi động lại khi reboot
 pm2 save
@@ -79,7 +80,7 @@ pm2 startup
 ```bash
 git pull origin master
 bun run build
-pm2 restart totp-client
+pm2 restart get2fa
 ```
 
 ---

@@ -7,7 +7,7 @@ import { AccountRow } from "@/components/account-row";
 import type { AppData } from "@/lib/get2fa-data";
 
 const translations: Record<string, string> = {
-  "app.title": "Authenticator",
+  "app.title": "get2fa",
   "workspace.switcher": "Workspace",
   "workspace.create": "New workspace",
   "workspace.rename": "Rename workspace",
@@ -22,6 +22,7 @@ const translations: Record<string, string> = {
   "backup.center": "Backup Center",
   "backup.export_selected": "Export selected workspaces",
   "backup.import": "Import Backup",
+  "backup.export_success": "Backup downloaded successfully",
   "account_row.drag_handle": "Reorder {{label}}",
 };
 
@@ -121,6 +122,7 @@ describe("workspace app ui", () => {
   it("shows Default as the initial workspace", () => {
     render(<App />);
 
+    expect(screen.getByText("get2fa")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /default/i })).toBeInTheDocument();
   });
 
@@ -199,10 +201,14 @@ describe("workspace app ui", () => {
   it("exports the current workspace", async () => {
     const user = userEvent.setup();
     const capturedBlobs: Blob[] = [];
+    const downloads: string[] = [];
 
     vi.mocked(URL.createObjectURL).mockImplementation((blob) => {
       capturedBlobs.push(blob as Blob);
       return "blob:current-workspace";
+    });
+    vi.mocked(HTMLAnchorElement.prototype.click).mockImplementation(function click() {
+      downloads.push(this.download);
     });
 
     seedAppData({
@@ -232,6 +238,7 @@ describe("workspace app ui", () => {
     await user.click(screen.getByRole("menuitem", { name: /export current workspace/i }));
 
     expect(capturedBlobs).toHaveLength(1);
+    expect(downloads).toEqual(["get2fa-backup-2026-03-15.json"]);
     const payload = JSON.parse(await capturedBlobs[0].text());
     expect(payload.workspaces).toHaveLength(1);
     expect(payload.workspaces[0].name).toBe("Default");

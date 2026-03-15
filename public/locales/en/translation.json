@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Authenticator",
+    "title": "get2fa",
     "ready": "Ready to secure your digital life.",
     "enter_key": "Enter a secret key above to generate your first 2FA code."
   },
@@ -30,7 +30,7 @@
     "clipboard_error": "Clipboard access denied",
     "service_placeholder": "Service Name (e.g. Google, Facebook)",
     "add_tags_placeholder": "Add tags...",
-    "save_authenticator": "Save Authenticator",
+    "save_authenticator": "Save account",
     "success": "Account added successfully"
   },
   "account_row": {

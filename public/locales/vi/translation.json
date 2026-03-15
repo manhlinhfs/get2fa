@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Trình Xác Thực",
+    "title": "get2fa",
     "ready": "Sẵn sàng bảo vệ cuộc sống số của bạn.",
     "enter_key": "Nhập mã bí mật ở trên để tạo mã 2FA đầu tiên."
   },
@@ -30,7 +30,7 @@
     "clipboard_error": "Truy cập bộ nhớ tạm bị từ chối",
     "service_placeholder": "Tên dịch vụ (vd: Google, Facebook)",
     "add_tags_placeholder": "Thêm thẻ...",
-    "save_authenticator": "Lưu Trình xác thực",
+    "save_authenticator": "Lưu tài khoản",
     "success": "Đã thêm tài khoản thành công"
   },
   "account_row": {

@@ -1,5 +1,5 @@
 {
-  "app": { "title": "身份验证器", "ready": "准备保护您的数字生活。", "enter_key": "在上方输入密钥以生成您的第一个 2FA 代码。" },
+  "app": { "title": "get2fa", "ready": "准备保护您的数字生活。", "enter_key": "在上方输入密钥以生成您的第一个 2FA 代码。" },
   "filter": { "placeholder": "按标签筛选...", "no_tags": "未找到标签。", "popular": "流行:", "no_match": "没有帐户匹配标签:", "clear": "清除筛选" },
   "common": { 
     "language": "语言", "theme": "主题", "help": "帮助", "backup": "数据备份",
@@ -12,7 +12,7 @@
     "clipboard_error": "剪贴板访问被拒绝",
     "service_placeholder": "服务名称（例如 Google, Facebook）",
     "add_tags_placeholder": "添加标签...",
-    "save_authenticator": "保存身份验证器",
+    "save_authenticator": "保存账户",
     "success": "帐户添加成功"
   },
   "account_row": {

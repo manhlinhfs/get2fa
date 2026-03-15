@@ -1,5 +1,5 @@
 {
-  "app": { "title": "Authentificateur", "ready": "Prêt à sécuriser votre vie numérique.", "enter_key": "Entrez une clé secrète ci-dessus pour générer votre premier code 2FA." },
+  "app": { "title": "get2fa", "ready": "Prêt à sécuriser votre vie numérique.", "enter_key": "Entrez une clé secrète ci-dessus pour générer votre premier code 2FA." },
   "filter": { "placeholder": "Filtrer par étiquette...", "no_tags": "Aucune étiquette trouvée.", "popular": "Populaire:", "no_match": "Aucun compte ne correspond à l'étiquette:", "clear": "Effacer le filtre" },
   "common": { 
     "language": "Langue", "theme": "Thème", "help": "Aide", "backup": "Sauvegarde des données",
@@ -12,7 +12,7 @@
     "clipboard_error": "Accès au presse-papiers refusé",
     "service_placeholder": "Nom du service (ex. Google, Facebook)",
     "add_tags_placeholder": "Ajouter des étiquettes...",
-    "save_authenticator": "Enregistrer l'authentificateur",
+    "save_authenticator": "Enregistrer le compte",
     "success": "Compte ajouté avec succès"
   },
   "account_row": {

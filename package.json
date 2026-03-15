@@ -1,5 +1,5 @@
 {
-  "name": "totp-client",
+  "name": "get2fa",
   "private": true,
   "version": "0.0.0",
   "type": "module",

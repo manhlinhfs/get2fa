@@ -61,7 +61,7 @@ export function DataBackup({
     try {
       downloadBackup(
         onExportCurrentWorkspace(),
-        createBackupFilename("get2fa-workspace-backup"),
+        createBackupFilename("get2fa-backup"),
       );
       toast.success(t("backup.export_success"));
     } catch {

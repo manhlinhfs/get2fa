@@ -1,5 +1,5 @@
 {
-  "app": { "title": "Autenticador", "ready": "Listo para asegurar su vida digital.", "enter_key": "Ingrese una clave secreta arriba para generar su primer código 2FA." },
+  "app": { "title": "get2fa", "ready": "Listo para asegurar su vida digital.", "enter_key": "Ingrese una clave secreta arriba para generar su primer código 2FA." },
   "filter": { "placeholder": "Filtrar por etiqueta...", "no_tags": "No se encontraron etiquetas.", "popular": "Popular:", "no_match": "Ninguna cuenta coincide con la etiqueta:", "clear": "Borrar filtro" },
   "common": { 
     "language": "Idioma", "theme": "Tema", "help": "Ayuda", "backup": "Copia de seguridad",
@@ -12,7 +12,7 @@
     "clipboard_error": "Acceso al portapapeles denegado",
     "service_placeholder": "Nombre del servicio (ej. Google, Facebook)",
     "add_tags_placeholder": "Añadir etiquetas...",
-    "save_authenticator": "Guardar Autenticador",
+    "save_authenticator": "Guardar cuenta",
     "success": "Cuenta añadida con éxito"
   },
   "account_row": {
