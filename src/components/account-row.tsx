@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence, Reorder, useDragControls } from "framer-motion";
 import { Trash2, Pencil, CheckCircle2, GripVertical } from "lucide-react";
 import { toast } from "sonner";
-import type { TwoFactorAccount } from "@/hooks/use-2fa";
+import type { TwoFactorAccount } from "@/lib/get2fa-data";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import * as OTPAuth from "otpauth";

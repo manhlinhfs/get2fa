@@ -3,7 +3,7 @@ import { Save, X, ClipboardPaste, KeyRound, User, Tag, ChevronUp } from "lucide-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import type { TwoFactorAccount } from "@/hooks/use-2fa";
+import type { AccountInput } from "@/lib/get2fa-data";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -11,7 +11,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import { useTranslation } from "react-i18next";
 
 interface AddAccountFormProps {
-  onAdd: (account: Omit<TwoFactorAccount, "id">) => void;
+  onAdd: (account: AccountInput) => void;
   availableTags: string[];
 }
 

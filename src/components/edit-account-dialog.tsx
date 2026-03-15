@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import type { TwoFactorAccount } from "@/hooks/use-2fa";
+import type { TwoFactorAccount } from "@/lib/get2fa-data";
 import { useTranslation } from "react-i18next";
 
 interface EditAccountDialogProps {
@@ -59,6 +59,7 @@ export function EditAccountDialog({ account, open, onOpenChange, onUpdate, avail
       label,
       secret: secret.replace(/[\s-]/g, "").toUpperCase(),
       tags,
+      updatedAt: new Date().toISOString(),
     });
     onOpenChange(false);
   };

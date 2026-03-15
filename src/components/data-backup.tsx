@@ -10,15 +10,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import type { TwoFactorAccount } from "@/hooks/use-2fa";
+import type { TwoFactorAccount } from "@/lib/get2fa-data";
 import { useTranslation } from "react-i18next";
 
 interface DataBackupProps {
   accounts: TwoFactorAccount[];
+  onExportCurrentWorkspace: () => unknown;
   onImport: (accounts: Partial<TwoFactorAccount>[]) => number;
 }
 
-export function DataBackup({ accounts, onImport }: DataBackupProps) {
+export function DataBackup({ accounts, onExportCurrentWorkspace, onImport }: DataBackupProps) {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -29,16 +30,7 @@ export function DataBackup({ accounts, onImport }: DataBackupProps) {
     }
 
     try {
-      const dataToExport = {
-        version: 1,
-        exportedAt: new Date().toISOString(),
-        data: accounts.map(({ secret, issuer, label, tags }) => ({
-          secret,
-          issuer,
-          label,
-          tags,
-        })),
-      };
+      const dataToExport = onExportCurrentWorkspace();
 
       const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
         type: "application/json",

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DataBackup } from "@/components/data-backup";
 import { HelpDialog } from "@/components/help-dialog";
-import { use2FA } from "@/hooks/use-2fa";
+import { useGet2FAApp } from "@/hooks/use-get2fa-app";
 import { FilterX, Sparkles } from "lucide-react";
 import { AnimatePresence, motion, Reorder } from "framer-motion";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -9,6 +9,8 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { AddAccountForm } from "@/components/add-account-form";
 import { AccountRow } from "@/components/account-row";
+import { WorkspaceSwitcher } from "@/components/workspace-switcher";
+import { WorkspaceDialog } from "@/components/workspace-dialog";
 import { Toaster } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -24,30 +26,46 @@ import {
 
 function TwoFactorApp() {
   const { t } = useTranslation();
-  const { accounts, availableTags, addAccount, removeAccount, updateAccount, importAccounts, reorderAccounts } = use2FA();
-  const [filterTag, setFilterTag] = useState<string | null>(null);
+  const {
+    activeWorkspace,
+    accounts,
+    availableTags,
+    topTags,
+    workspaces,
+    addAccount,
+    deleteWorkspace,
+    exportSelectedWorkspaces,
+    filterTag,
+    importBackup,
+    removeAccount,
+    renameWorkspace,
+    reorderAccounts,
+    selectWorkspace,
+    setFilterTag,
+    createWorkspace,
+    updateAccount,
+  } = useGet2FAApp();
   const [tagSearch, setTagSearch] = useState("");
+  const [workspaceDialogMode, setWorkspaceDialogMode] = useState<"create" | "rename">("create");
+  const [workspaceDialogOpen, setWorkspaceDialogOpen] = useState(false);
 
-  // Calculate popular tags (top 3)
-  const popularTags = accounts.reduce((acc, account) => {
-    account.tags?.forEach(tag => {
-      acc[tag] = (acc[tag] || 0) + 1;
-    });
-    return acc;
-  }, {} as Record<string, number>);
-
-  const topTags = Object.entries(popularTags)
-    .sort(([, a], [, b]) => b - a) // Sort by count descending
-    .slice(0, 3) // Take top 3
-    .map(([tag]) => tag);
-
-  const filteredAccounts = filterTag 
-    ? accounts.filter(a => a.tags?.includes(filterTag)) 
+  const filteredAccounts = filterTag
+    ? accounts.filter(a => a.tags?.includes(filterTag))
     : accounts;
 
-  const filteredTagsForSearch = availableTags.filter(tag => 
+  const filteredTagsForSearch = availableTags.filter(tag =>
     tag.toLowerCase().includes(tagSearch.toLowerCase())
   );
+
+  const handleLegacyImport = (newAccounts: Partial<(typeof accounts)[number]>[]) => {
+    const previousCount = activeWorkspace.accounts.length;
+    const nextAppData = importBackup(newAccounts);
+    const nextWorkspace =
+      nextAppData.workspaces.find((workspace) => workspace.id === activeWorkspace.id) ??
+      nextAppData.workspaces[0];
+
+    return Math.max(nextWorkspace.accounts.length - previousCount, 0);
+  };
 
   return (
     <div className="min-h-screen relative font-sans selection:bg-primary/30 overflow-hidden">
@@ -57,30 +75,50 @@ function TwoFactorApp() {
        <div className="fixed bottom-0 right-0 -z-10 h-[500px] w-[500px] bg-blue-500/10 rounded-full blur-[100px] opacity-50 pointer-events-none translate-x-[50%] translate-y-[50%]"></div>
 
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
-        <div className="container flex h-14 md:h-16 items-center justify-between mx-auto px-4 max-w-5xl">
-          <motion.div 
-            className="flex items-center gap-2 md:gap-3 cursor-pointer group"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="relative flex items-center justify-center h-8 w-8 md:h-10 md:w-10 bg-background/50 border border-border/50 rounded-lg md:rounded-xl shadow-sm group-hover:shadow-primary/20 transition-all duration-300">
-               <img src="/icon.png" alt="App Logo" className="h-5 w-5 md:h-6 md:w-6 object-contain" />
-               <motion.div 
-                 className="absolute inset-0 rounded-lg md:rounded-xl bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"
-                 initial={false}
-                 animate={{ scale: [1, 1.2, 1], opacity: [0, 0.2, 0] }}
-                 transition={{ repeat: Infinity, duration: 2 }}
-               />
-            </div>
-            <span className="font-bold text-lg md:text-xl tracking-tight bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
-                {t('app.title')}
-            </span>
-          </motion.div>
+        <div className="container flex h-14 md:h-16 items-center justify-between mx-auto px-4 max-w-5xl gap-3">
+          <div className="flex min-w-0 items-center gap-2 md:gap-3">
+            <motion.div
+              className="flex items-center gap-2 md:gap-3 cursor-pointer group"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="relative flex items-center justify-center h-8 w-8 md:h-10 md:w-10 bg-background/50 border border-border/50 rounded-lg md:rounded-xl shadow-sm group-hover:shadow-primary/20 transition-all duration-300">
+                 <img src="/icon.png" alt="App Logo" className="h-5 w-5 md:h-6 md:w-6 object-contain" />
+                 <motion.div
+                   className="absolute inset-0 rounded-lg md:rounded-xl bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"
+                   initial={false}
+                   animate={{ scale: [1, 1.2, 1], opacity: [0, 0.2, 0] }}
+                   transition={{ repeat: Infinity, duration: 2 }}
+                 />
+              </div>
+              <span className="font-bold text-lg md:text-xl tracking-tight bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
+                  {t('app.title')}
+              </span>
+            </motion.div>
+            <WorkspaceSwitcher
+              activeWorkspaceId={activeWorkspace.id}
+              onCreateWorkspace={() => {
+                setWorkspaceDialogMode("create");
+                setWorkspaceDialogOpen(true);
+              }}
+              onDeleteWorkspace={() => deleteWorkspace(activeWorkspace.id)}
+              onRenameWorkspace={() => {
+                setWorkspaceDialogMode("rename");
+                setWorkspaceDialogOpen(true);
+              }}
+              onSelectWorkspace={selectWorkspace}
+              workspaces={workspaces}
+            />
+          </div>
           
           <div className="flex items-center gap-1 md:gap-2">
              <LanguageToggle />
              <HelpDialog />
-             <DataBackup accounts={accounts} onImport={importAccounts} />
+             <DataBackup
+               accounts={accounts}
+               onExportCurrentWorkspace={() => exportSelectedWorkspaces([activeWorkspace.id])}
+               onImport={handleLegacyImport}
+             />
              <ModeToggle />
           </div>
         </div>
@@ -175,7 +213,12 @@ function TwoFactorApp() {
                 <>
                 {/* Use Reorder.Group ONLY when showing all accounts (no filter) */}
                 {filterTag === null ? (
-                    <Reorder.Group axis="y" values={accounts} onReorder={reorderAccounts} className="space-y-3">
+                    <Reorder.Group
+                      axis="y"
+                      values={accounts}
+                      onReorder={(nextOrder) => reorderAccounts(nextOrder.map((account) => account.id))}
+                      className="space-y-3"
+                    >
                         {accounts.map((account) => (
                             <AccountRow 
                                 key={account.id} 
@@ -205,6 +248,21 @@ function TwoFactorApp() {
              )}
         </div>
       </main>
+      <WorkspaceDialog
+        key={`${workspaceDialogMode}-${activeWorkspace.id}`}
+        initialName={workspaceDialogMode === "rename" ? activeWorkspace.name : ""}
+        mode={workspaceDialogMode}
+        onOpenChange={setWorkspaceDialogOpen}
+        onSubmit={(name) => {
+          if (workspaceDialogMode === "create") {
+            createWorkspace(name);
+            return;
+          }
+
+          renameWorkspace(activeWorkspace.id, name);
+        }}
+        open={workspaceDialogOpen}
+      />
     </div>
   );
 }
