@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import {
   addAccount,
@@ -7,7 +7,16 @@ import {
   renameWorkspace,
   reorderWorkspaceAccounts,
 } from "./get2fa-data";
-import { migrateLegacyAccounts } from "./get2fa-storage";
+import {
+  initializeAppData,
+  migrateLegacyAccounts,
+  readAppData,
+  writeAppData,
+} from "./get2fa-storage";
+
+beforeEach(() => {
+  localStorage.clear();
+});
 
 describe("migrateLegacyAccounts", () => {
   it("creates a Default workspace from legacy flat accounts", () => {
@@ -92,5 +101,37 @@ describe("workspace reducers", () => {
     const result = reorderWorkspaceAccounts(initial, initial.currentWorkspaceId, ["a2", "a1"]);
 
     expect(result.workspaces[0].accounts.map((account) => account.id)).toEqual(["a2", "a1"]);
+  });
+});
+
+describe("storage helpers", () => {
+  it("loads existing app data from get2fa_app_v1", () => {
+    const appData = migrateLegacyAccounts([]);
+
+    writeAppData(appData);
+
+    expect(readAppData()).toEqual(appData);
+  });
+
+  it("migrates from 2fa_accounts_v2 when the new key is absent", () => {
+    localStorage.setItem(
+      "2fa_accounts_v2",
+      JSON.stringify([
+        {
+          id: "a1",
+          secret: "AAAA",
+          issuer: "GitHub",
+          label: "GitHub",
+          tags: ["work"],
+        },
+      ]),
+    );
+
+    const result = initializeAppData();
+
+    expect(result.workspaces).toHaveLength(1);
+    expect(result.workspaces[0].name).toBe("Default");
+    expect(result.workspaces[0].accounts[0].secret).toBe("AAAA");
+    expect(readAppData()).toEqual(result);
   });
 });
