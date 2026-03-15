@@ -62,12 +62,17 @@
   "backup": {
     "title": "Quản lý dữ liệu",
     "export": "Xuất sao lưu",
+    "export_current": "Xuất workspace hiện tại",
+    "center": "Trung tâm sao lưu",
+    "export_selected": "Xuất các workspace đã chọn",
     "import": "Nhập sao lưu",
     "no_data": "Không có dữ liệu để xuất",
     "export_success": "Đã tải xuống bản sao lưu thành công",
     "export_error": "Xuất dữ liệu thất bại",
     "import_success": "Đã nhập thành công {{count}} tài khoản",
+    "import_bundle_success": "Đã nhập thành công {{count}} workspace",
     "import_info": "Không tìm thấy tài khoản mới để nhập (đã bỏ qua bản trùng lặp)",
+    "import_bundle_info": "Không tìm thấy workspace nào để nhập",
     "import_error": "Tệp sao lưu không hợp lệ"
   }
 }

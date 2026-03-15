@@ -16,6 +16,11 @@ const translations: Record<string, string> = {
   "workspace.dialog.name_label": "Workspace name",
   "workspace.dialog.create_action": "Create workspace",
   "workspace.dialog.rename_action": "Save workspace",
+  "backup.title": "Data Management",
+  "backup.export_current": "Export current workspace",
+  "backup.center": "Backup Center",
+  "backup.export_selected": "Export selected workspaces",
+  "backup.import": "Import Backup",
 };
 
 vi.mock("react-i18next", () => ({
@@ -52,10 +57,23 @@ beforeAll(() => {
       dispatchEvent: vi.fn(),
     })),
   });
+  Object.defineProperty(URL, "createObjectURL", {
+    writable: true,
+    value: vi.fn(() => "blob:mock"),
+  });
+  Object.defineProperty(URL, "revokeObjectURL", {
+    writable: true,
+    value: vi.fn(),
+  });
+  Object.defineProperty(HTMLAnchorElement.prototype, "click", {
+    writable: true,
+    value: vi.fn(),
+  });
 });
 
 beforeEach(() => {
   localStorage.clear();
+  vi.clearAllMocks();
 });
 
 function seedAppData(appData: AppData) {
@@ -139,5 +157,139 @@ describe("workspace app ui", () => {
     await user.click(screen.getByRole("button", { name: /create workspace/i }));
 
     expect(screen.getByRole("button", { name: /project a/i })).toBeInTheDocument();
+  });
+
+  it("exports the current workspace", async () => {
+    const user = userEvent.setup();
+    const capturedBlobs: Blob[] = [];
+
+    vi.mocked(URL.createObjectURL).mockImplementation((blob) => {
+      capturedBlobs.push(blob as Blob);
+      return "blob:current-workspace";
+    });
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [],
+        },
+        {
+          id: "work",
+          name: "Work",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /data management/i }));
+    await user.click(screen.getByRole("menuitem", { name: /export current workspace/i }));
+
+    expect(capturedBlobs).toHaveLength(1);
+    const payload = JSON.parse(await capturedBlobs[0].text());
+    expect(payload.workspaces).toHaveLength(1);
+    expect(payload.workspaces[0].name).toBe("Default");
+  });
+
+  it("allows selecting multiple workspaces for backup", async () => {
+    const user = userEvent.setup();
+    const capturedBlobs: Blob[] = [];
+
+    vi.mocked(URL.createObjectURL).mockImplementation((blob) => {
+      capturedBlobs.push(blob as Blob);
+      return "blob:selected-workspaces";
+    });
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [],
+        },
+        {
+          id: "work",
+          name: "Work",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /data management/i }));
+    await user.click(screen.getByRole("menuitem", { name: /backup center/i }));
+    await user.click(screen.getByRole("checkbox", { name: "Work" }));
+    await user.click(screen.getByRole("button", { name: /export selected workspaces/i }));
+
+    expect(capturedBlobs).toHaveLength(1);
+    const payload = JSON.parse(await capturedBlobs[0].text());
+    expect(payload.workspaces.map((workspace: { name: string }) => workspace.name)).toEqual([
+      "Default",
+      "Work",
+    ]);
+  });
+
+  it("imports a legacy payload into the active workspace", async () => {
+    const user = userEvent.setup();
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "work",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [],
+        },
+        {
+          id: "work",
+          name: "Work",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [],
+        },
+      ],
+    });
+
+    const { container } = render(<App />);
+    const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+    const legacyFile = new File(
+      [
+        JSON.stringify([
+          {
+            secret: "AAAA",
+            issuer: "GitHub",
+            label: "GitHub",
+            tags: ["work"],
+          },
+        ]),
+      ],
+      "legacy-backup.json",
+      { type: "application/json" },
+    );
+
+    await user.click(screen.getByRole("button", { name: /data management/i }));
+    await user.click(screen.getByRole("menuitem", { name: /import backup/i }));
+    await user.upload(fileInput, legacyFile);
+
+    expect(await screen.findByText("GitHub")).toBeInTheDocument();
   });
 });

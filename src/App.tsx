@@ -15,6 +15,7 @@ import { Toaster } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { parseImportedBackup } from "@/lib/get2fa-backup";
 import {
   Combobox,
   ComboboxContent,
@@ -57,14 +58,29 @@ function TwoFactorApp() {
     tag.toLowerCase().includes(tagSearch.toLowerCase())
   );
 
-  const handleLegacyImport = (newAccounts: Partial<(typeof accounts)[number]>[]) => {
-    const previousCount = activeWorkspace.accounts.length;
-    const nextAppData = importBackup(newAccounts);
-    const nextWorkspace =
-      nextAppData.workspaces.find((workspace) => workspace.id === activeWorkspace.id) ??
-      nextAppData.workspaces[0];
+  const handleImport = (payload: unknown) => {
+    const parsedBackup = parseImportedBackup(payload);
 
-    return Math.max(nextWorkspace.accounts.length - previousCount, 0);
+    if (parsedBackup.kind === "legacy") {
+      const previousCount = activeWorkspace.accounts.length;
+      const nextAppData = importBackup(payload);
+      const nextWorkspace =
+        nextAppData.workspaces.find((workspace) => workspace.id === activeWorkspace.id) ??
+        nextAppData.workspaces[0];
+
+      return {
+        kind: "legacy" as const,
+        count: Math.max(nextWorkspace.accounts.length - previousCount, 0),
+      };
+    }
+
+    const previousCount = workspaces.length;
+    const nextAppData = importBackup(payload);
+
+    return {
+      kind: "bundle" as const,
+      count: Math.max(nextAppData.workspaces.length - previousCount, 0),
+    };
   };
 
   return (
@@ -115,9 +131,11 @@ function TwoFactorApp() {
              <LanguageToggle />
              <HelpDialog />
              <DataBackup
-               accounts={accounts}
+               activeWorkspaceId={activeWorkspace.id}
                onExportCurrentWorkspace={() => exportSelectedWorkspaces([activeWorkspace.id])}
-               onImport={handleLegacyImport}
+               onExportSelectedWorkspaces={exportSelectedWorkspaces}
+               onImport={handleImport}
+               workspaces={workspaces}
              />
              <ModeToggle />
           </div>

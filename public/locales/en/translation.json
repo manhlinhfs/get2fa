@@ -62,12 +62,17 @@
   "backup": {
     "title": "Data Management",
     "export": "Export Backup",
+    "export_current": "Export current workspace",
+    "center": "Backup Center",
+    "export_selected": "Export selected workspaces",
     "import": "Import Backup",
     "no_data": "No data to export",
     "export_success": "Backup downloaded successfully",
     "export_error": "Failed to export data",
     "import_success": "Successfully imported {{count}} accounts",
+    "import_bundle_success": "Successfully imported {{count}} workspaces",
     "import_info": "No new accounts found to import (duplicates skipped)",
+    "import_bundle_info": "No workspaces found to import",
     "import_error": "Invalid backup file"
   }
 }

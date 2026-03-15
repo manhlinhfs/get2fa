@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { Download, Upload, Settings2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { Download, Layers3, Settings2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -9,44 +9,75 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { BackupCenterDialog } from "@/components/backup-center-dialog";
 import { Button } from "@/components/ui/button";
-import type { TwoFactorAccount } from "@/lib/get2fa-data";
+import type { Workspace } from "@/lib/get2fa-data";
 import { useTranslation } from "react-i18next";
 
-interface DataBackupProps {
-  accounts: TwoFactorAccount[];
-  onExportCurrentWorkspace: () => unknown;
-  onImport: (accounts: Partial<TwoFactorAccount>[]) => number;
+interface BackupImportResult {
+  kind: "bundle" | "legacy";
+  count: number;
 }
 
-export function DataBackup({ accounts, onExportCurrentWorkspace, onImport }: DataBackupProps) {
+interface DataBackupProps {
+  workspaces: Workspace[];
+  activeWorkspaceId: string;
+  onExportCurrentWorkspace: () => unknown;
+  onExportSelectedWorkspaces: (workspaceIds: string[]) => unknown;
+  onImport: (payload: unknown) => BackupImportResult;
+}
+
+function createBackupFilename(prefix: string) {
+  return `${prefix}-${new Date().toISOString().split("T")[0]}.json`;
+}
+
+function downloadBackup(payload: unknown, filename: string) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+  URL.revokeObjectURL(url);
+}
+
+export function DataBackup({
+  workspaces,
+  activeWorkspaceId,
+  onExportCurrentWorkspace,
+  onExportSelectedWorkspaces,
+  onImport,
+}: DataBackupProps) {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [backupCenterOpen, setBackupCenterOpen] = useState(false);
 
-  const handleExport = () => {
-    if (accounts.length === 0) {
-      toast.error(t('backup.no_data'));
-      return;
-    }
-
+  const handleExportCurrentWorkspace = () => {
     try {
-      const dataToExport = onExportCurrentWorkspace();
-
-      const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `authenticator-backup-${new Date().toISOString().split("T")[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-      toast.success(t('backup.export_success'));
+      downloadBackup(
+        onExportCurrentWorkspace(),
+        createBackupFilename("get2fa-workspace-backup"),
+      );
+      toast.success(t("backup.export_success"));
     } catch {
-      toast.error(t('backup.export_error'));
+      toast.error(t("backup.export_error"));
+    }
+  };
+
+  const handleExportSelectedWorkspaces = (workspaceIds: string[]) => {
+    try {
+      downloadBackup(
+        onExportSelectedWorkspaces(workspaceIds),
+        createBackupFilename("get2fa-backup"),
+      );
+      toast.success(t("backup.export_success"));
+    } catch {
+      toast.error(t("backup.export_error"));
     }
   };
 
@@ -63,31 +94,26 @@ export function DataBackup({ accounts, onExportCurrentWorkspace, onImport }: Dat
       try {
         const content = e.target?.result as string;
         const parsed = JSON.parse(content);
-        
-        let accountsToImport = [];
 
-        // Support both our format and array format
-        if (Array.isArray(parsed)) {
-            accountsToImport = parsed;
-        } else if (parsed.data && Array.isArray(parsed.data)) {
-            accountsToImport = parsed.data;
-        } else {
-            throw new Error("Invalid format");
-        }
+        const importResult = onImport(parsed);
 
-        const count = onImport(accountsToImport);
-        
-        if (count > 0) {
-            toast.success(t('backup.import_success', { count }));
+        if (importResult.count > 0) {
+          const successKey =
+            importResult.kind === "bundle"
+              ? "backup.import_bundle_success"
+              : "backup.import_success";
+          toast.success(t(successKey, { count: importResult.count }));
         } else {
-            toast.info(t('backup.import_info'));
+          const infoKey =
+            importResult.kind === "bundle" ? "backup.import_bundle_info" : "backup.import_info";
+          toast.info(t(infoKey));
         }
       } catch (error) {
-        toast.error(t('backup.import_error'));
+        toast.error(t("backup.import_error"));
         console.error(error);
       } finally {
         if (fileInputRef.current) {
-            fileInputRef.current.value = ""; // Reset input
+          fileInputRef.current.value = "";
         }
       }
     };
@@ -105,23 +131,40 @@ export function DataBackup({ accounts, onExportCurrentWorkspace, onImport }: Dat
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" className="bg-background/50 backdrop-blur-sm border-primary/20 hover:border-primary/50">
+          <Button
+            aria-label={t("backup.title")}
+            className="bg-background/50 backdrop-blur-sm border-primary/20 hover:border-primary/50"
+            size="icon"
+            variant="outline"
+          >
             <Settings2 className="h-[1.2rem] w-[1.2rem]" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur-xl">
-          <DropdownMenuLabel>{t('backup.title')}</DropdownMenuLabel>
+          <DropdownMenuLabel>{t("backup.title")}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleExport} className="cursor-pointer">
+          <DropdownMenuItem className="cursor-pointer" onClick={handleExportCurrentWorkspace}>
             <Download className="mr-2 h-4 w-4" />
-            <span>{t('backup.export')}</span>
+            <span>{t("backup.export_current")}</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleImportClick} className="cursor-pointer">
+          <DropdownMenuItem className="cursor-pointer" onClick={() => setBackupCenterOpen(true)}>
+            <Layers3 className="mr-2 h-4 w-4" />
+            <span>{t("backup.center")}</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer" onClick={handleImportClick}>
             <Upload className="mr-2 h-4 w-4" />
-            <span>{t('backup.import')}</span>
+            <span>{t("backup.import")}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <BackupCenterDialog
+        activeWorkspaceId={activeWorkspaceId}
+        key={`${activeWorkspaceId}-${backupCenterOpen ? "open" : "closed"}`}
+        onExport={handleExportSelectedWorkspaces}
+        onOpenChange={setBackupCenterOpen}
+        open={backupCenterOpen}
+        workspaces={workspaces}
+      />
     </>
   );
 }
