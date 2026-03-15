@@ -36,6 +36,7 @@
   "account_row": {
     "copied": "Đã sao chép mã vào bộ nhớ tạm",
     "copied_short": "Đã sao chép!",
+    "drag_handle": "Sắp xếp lại {{label}}",
     "delete_title": "Xóa tài khoản",
     "delete_desc": "Bạn có chắc chắn muốn xóa <1>{{label}}</1>? Hành động này không thể hoàn tác."
   },

@@ -3,12 +3,12 @@ import { DataBackup } from "@/components/data-backup";
 import { HelpDialog } from "@/components/help-dialog";
 import { useGet2FAApp } from "@/hooks/use-get2fa-app";
 import { FilterX, Sparkles } from "lucide-react";
-import { AnimatePresence, motion, Reorder } from "framer-motion";
+import { motion } from "framer-motion";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { AddAccountForm } from "@/components/add-account-form";
-import { AccountRow } from "@/components/account-row";
+import { AccountSortableList } from "@/components/account-sortable-list";
 import { WorkspaceSwitcher } from "@/components/workspace-switcher";
 import { WorkspaceDialog } from "@/components/workspace-dialog";
 import { Toaster } from "sonner";
@@ -228,41 +228,14 @@ function TwoFactorApp() {
                      <button onClick={() => setFilterTag(null)} className="text-primary hover:underline text-sm font-medium">{t('filter.clear')}</button>
                  </div>
              ) : (
-                <>
-                {/* Use Reorder.Group ONLY when showing all accounts (no filter) */}
-                {filterTag === null ? (
-                    <Reorder.Group
-                      axis="y"
-                      values={accounts}
-                      onReorder={(nextOrder) => reorderAccounts(nextOrder.map((account) => account.id))}
-                      className="space-y-3"
-                    >
-                        {accounts.map((account) => (
-                            <AccountRow 
-                                key={account.id} 
-                                account={account} 
-                                onRemove={removeAccount}
-                                onUpdate={updateAccount}
-                                availableTags={availableTags}
-                                isDraggable={true}
-                            />
-                        ))}
-                    </Reorder.Group>
-                ) : (
-                    <AnimatePresence mode="popLayout">
-                        {filteredAccounts.map((account) => (
-                            <AccountRow 
-                                key={account.id} 
-                                account={account} 
-                                onRemove={removeAccount}
-                                onUpdate={updateAccount}
-                                availableTags={availableTags}
-                                isDraggable={false}
-                            />
-                        ))}
-                    </AnimatePresence>
-                )}
-                </>
+                <AccountSortableList
+                  accounts={accounts}
+                  availableTags={availableTags}
+                  onRemove={removeAccount}
+                  onReorder={reorderAccounts}
+                  onUpdate={updateAccount}
+                  visibleAccounts={filteredAccounts}
+                />
              )}
         </div>
       </main>

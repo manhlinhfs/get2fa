@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence, Reorder, useDragControls } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, Pencil, CheckCircle2, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import type { TwoFactorAccount } from "@/lib/get2fa-data";
@@ -24,10 +24,22 @@ interface AccountRowProps {
   onRemove: (id: string) => void;
   onUpdate: (account: TwoFactorAccount) => void;
   availableTags: string[];
+  dragHandleProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
+  dragHandleRef?: (node: HTMLButtonElement | null) => void;
+  isDragging?: boolean;
   isDraggable?: boolean;
 }
 
-export function AccountRow({ account, onRemove, onUpdate, availableTags, isDraggable = false }: AccountRowProps) {
+export function AccountRow({
+  account,
+  onRemove,
+  onUpdate,
+  availableTags,
+  dragHandleProps,
+  dragHandleRef,
+  isDragging = false,
+  isDraggable = false,
+}: AccountRowProps) {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -38,7 +50,6 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
   const [remaining, setRemaining] = useState(30);
   const [period, setPeriod] = useState(30);
 
-  const controls = useDragControls();
   const totp = useMemo(() => {
     try {
       return new OTPAuth.TOTP({
@@ -82,6 +93,10 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
   const displayToken = totp ? token : "ERROR";
   const progress = totp ? remaining / period : 0;
   const isExpiring = totp ? remaining < 5 : true;
+  const dragHandleLabel = t("account_row.drag_handle", { label: account.label }).replace(
+    "{{label}}",
+    account.label,
+  );
   
   const handleCopy = () => {
     const rawToken = displayToken.replace(/\s/g, "");
@@ -93,42 +108,34 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
     }
   };
 
-  const Component = isDraggable ? Reorder.Item : motion.div;
-
   return (
     <>
-        <Component
-            value={account}
+        <motion.div
             layout
             initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            whileDrag={{ 
-                scale: 1.03, 
-                boxShadow: "0 20px 50px -15px rgba(0,0,0,0.5)", 
-                zIndex: 100,
-                cursor: "grabbing"
-            }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
             className={cn(
                 "group relative flex flex-col md:flex-row md:items-center justify-between p-4 md:p-5 rounded-2xl border transition-all duration-200 gap-4 md:gap-0",
                 "bg-white/70 dark:bg-card/40 backdrop-blur-md border-white/20 dark:border-white/5",
                 "shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-5px_rgba(0,0,0,0.1)]",
                 "dark:hover:bg-card/60 dark:hover:border-primary/20",
-                !isDraggable && "hover:-translate-y-0.5"
+                !isDragging && "hover:-translate-y-0.5",
+                isDragging && "cursor-grabbing shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)]"
             )}
-            dragListener={false}
-            dragControls={controls}
         >
             {/* Drag Handle */}
             {isDraggable && (
-                <div 
+                <button
+                    aria-label={dragHandleLabel}
                     className="absolute left-1 top-4 md:top-1/2 md:-translate-y-1/2 p-3 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-primary hover:bg-primary/5 rounded-xl z-20 touch-none transition-colors"
-                    onPointerDown={(e) => controls.start(e)}
-                    title="Drag to reorder"
+                    ref={dragHandleRef}
+                    type="button"
+                    {...dragHandleProps}
                 >
                     <GripVertical className="h-6 w-6" />
-                </div>
+                </button>
             )}
 
             {/* Left Side: Info */}
@@ -239,7 +246,7 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
                     </motion.div>
                 )}
             </AnimatePresence>
-        </Component>
+        </motion.div>
 
         {/* Edit Dialog */}
         <EditAccountDialog 

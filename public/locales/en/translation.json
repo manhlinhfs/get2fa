@@ -36,6 +36,7 @@
   "account_row": {
     "copied": "Copied code to clipboard",
     "copied_short": "Copied!",
+    "drag_handle": "Reorder {{label}}",
     "delete_title": "Delete Account",
     "delete_desc": "Are you sure you want to remove <1>{{label}}</1>? This action cannot be undone."
   },

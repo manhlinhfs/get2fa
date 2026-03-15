@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import App from "@/App";
 import type { AppData } from "@/lib/get2fa-data";
@@ -21,6 +21,7 @@ const translations: Record<string, string> = {
   "backup.center": "Backup Center",
   "backup.export_selected": "Export selected workspaces",
   "backup.import": "Import Backup",
+  "account_row.drag_handle": "Reorder {{label}}",
 };
 
 vi.mock("react-i18next", () => ({
@@ -44,6 +45,26 @@ vi.mock("sonner", () => ({
 }));
 
 beforeAll(() => {
+  Object.defineProperty(HTMLElement.prototype, "getBoundingClientRect", {
+    configurable: true,
+    value() {
+      const sortableContainer = this.closest("[data-sortable-index]");
+      const sortableIndex = Number(sortableContainer?.getAttribute("data-sortable-index") ?? 0);
+      const top = sortableIndex * 80;
+
+      return {
+        bottom: top + 64,
+        height: 64,
+        left: 0,
+        right: 320,
+        toJSON: () => ({}),
+        top,
+        width: 320,
+        x: 0,
+        y: top,
+      };
+    },
+  });
   Object.defineProperty(window, "matchMedia", {
     writable: true,
     value: vi.fn().mockImplementation((query: string) => ({
@@ -76,8 +97,23 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
+afterEach(() => {
+  vi.useRealTimers();
+});
+
 function seedAppData(appData: AppData) {
   localStorage.setItem("get2fa_app_v1", JSON.stringify(appData));
+}
+
+function readStoredAppData(): AppData {
+  return JSON.parse(localStorage.getItem("get2fa_app_v1") ?? "null") as AppData;
+}
+
+async function dispatchKeyboardSort(handle: HTMLElement, direction: "ArrowDown" | "ArrowUp") {
+  fireEvent.keyDown(handle, { code: "Space", key: " " });
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  fireEvent.keyDown(handle, { code: direction, key: direction });
+  fireEvent.keyDown(handle, { code: "Space", key: " " });
 }
 
 describe("workspace app ui", () => {
@@ -291,5 +327,122 @@ describe("workspace app ui", () => {
     await user.upload(fileInput, legacyFile);
 
     expect(await screen.findByText("GitHub")).toBeInTheDocument();
+  });
+
+  it("persists reordered accounts after drag end", async () => {
+    const user = userEvent.setup();
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "github",
+              secret: "AAAA",
+              issuer: "GitHub",
+              label: "GitHub",
+              tags: ["work"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+            {
+              id: "aws",
+              secret: "BBBB",
+              issuer: "AWS",
+              label: "AWS",
+              tags: ["cloud"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    const dragHandle = screen.getByRole("button", { name: /reorder github/i });
+    dragHandle.focus();
+    await dispatchKeyboardSort(dragHandle, "ArrowDown");
+
+    await waitFor(() => {
+      expect(readStoredAppData().workspaces[0].accounts.map((account) => account.id)).toEqual([
+        "aws",
+        "github",
+      ]);
+    });
+  });
+
+  it("reorders the filtered subset without losing hidden accounts", async () => {
+    const user = userEvent.setup();
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "github",
+              secret: "AAAA",
+              issuer: "GitHub",
+              label: "GitHub",
+              tags: ["work"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+            {
+              id: "aws",
+              secret: "BBBB",
+              issuer: "AWS",
+              label: "AWS",
+              tags: ["cloud"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+            {
+              id: "vercel",
+              secret: "CCCC",
+              issuer: "Vercel",
+              label: "Vercel",
+              tags: ["work"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    const workFilterBadge = screen
+      .getAllByText("work")
+      .find((element) => element.getAttribute("data-slot") === "badge");
+    expect(workFilterBadge).toBeDefined();
+
+    await user.click(workFilterBadge!);
+
+    const dragHandle = screen.getByRole("button", { name: /reorder vercel/i });
+    dragHandle.focus();
+    await dispatchKeyboardSort(dragHandle, "ArrowUp");
+
+    await waitFor(() => {
+      expect(readStoredAppData().workspaces[0].accounts.map((account) => account.id)).toEqual([
+        "vercel",
+        "aws",
+        "github",
+      ]);
+    });
   });
 });
