@@ -1,0 +1,20 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="72" y1="48" x2="432" y2="472" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="0.55" stop-color="#172554"/>
+      <stop offset="1" stop-color="#0F766E"/>
+    </linearGradient>
+    <linearGradient id="glyph" x1="162" y1="120" x2="366" y2="424" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#E2E8F0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="132" fill="url(#bg)"/>
+  <circle cx="132" cy="126" r="148" fill="#60A5FA" fill-opacity="0.18"/>
+  <circle cx="410" cy="412" r="176" fill="#2DD4BF" fill-opacity="0.16"/>
+  <path d="M149.252 178.851C174.7 132.823 219.595 108 278.463 108C346.762 108 396 145.891 396 207.248C396 258.127 367.085 292.779 304.235 328.003C258.198 353.814 228.657 374.396 213.417 403.984H396V452H124C130.562 384.811 166.08 338.424 240.895 296.006C300.709 262.043 323.357 242.561 323.357 208.223C323.357 179.239 300.709 160.856 270.37 160.856C236.823 160.856 208.36 177.82 189.8 213.945L149.252 178.851Z" fill="url(#glyph)"/>
+  <circle cx="352" cy="156" r="28" fill="#22D3EE"/>
+  <path d="M352 141V171" stroke="#0F172A" stroke-width="10" stroke-linecap="round"/>
+  <path d="M337 156H367" stroke="#0F172A" stroke-width="10" stroke-linecap="round"/>
+</svg>

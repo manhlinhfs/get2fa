@@ -122,6 +122,7 @@ describe("workspace app ui", () => {
   it("shows Default as the initial workspace", () => {
     render(<App />);
 
+    expect(screen.getByAltText("App Logo")).toHaveAttribute("src", "/icons/get2fa.svg");
     expect(screen.getByText("get2fa")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /default/i })).toBeInTheDocument();
   });
@@ -207,7 +208,7 @@ describe("workspace app ui", () => {
       capturedBlobs.push(blob as Blob);
       return "blob:current-workspace";
     });
-    vi.mocked(HTMLAnchorElement.prototype.click).mockImplementation(function click() {
+    vi.mocked(HTMLAnchorElement.prototype.click).mockImplementation(function click(this: HTMLAnchorElement) {
       downloads.push(this.download);
     });
 
