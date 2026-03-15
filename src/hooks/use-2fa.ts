@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 
 export interface TwoFactorAccount {
   id: string;
@@ -10,26 +10,32 @@ export interface TwoFactorAccount {
 
 const STORAGE_KEY = "2fa_accounts_v2";
 
-export function use2FA() {
-  const [accounts, setAccounts] = useState<TwoFactorAccount[]>([]);
-  const [availableTags, setAvailableTags] = useState<string[]>([]);
+function loadStoredAccounts(): TwoFactorAccount[] {
+  const stored = localStorage.getItem(STORAGE_KEY);
 
-  // 1. Load data
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setAccounts(parsed);
-        // Extract all unique tags
-        const tags = new Set<string>();
-        parsed.forEach((acc: TwoFactorAccount) => acc.tags?.forEach((t: string) => tags.add(t)));
-        setAvailableTags(Array.from(tags));
-      } catch (e) {
-        console.error("Failed to parse 2FA accounts", e);
-      }
-    }
-  }, []);
+  if (!stored) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(stored) as TwoFactorAccount[];
+  } catch (error) {
+    console.error("Failed to parse 2FA accounts", error);
+    return [];
+  }
+}
+
+function extractAvailableTags(accounts: TwoFactorAccount[]) {
+  const tags = new Set<string>();
+
+  accounts.forEach((account) => account.tags?.forEach((tag) => tags.add(tag)));
+
+  return Array.from(tags);
+}
+
+export function use2FA() {
+  const [accounts, setAccounts] = useState<TwoFactorAccount[]>(() => loadStoredAccounts());
+  const availableTags = useMemo(() => extractAvailableTags(accounts), [accounts]);
 
   // 2. Helper to save
   const persist = (newAccounts: TwoFactorAccount[]) => {
@@ -44,11 +50,6 @@ export function use2FA() {
     
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
     setAccounts(dataToSave);
-    
-    // Update available tags
-    const tags = new Set<string>();
-    dataToSave.forEach(acc => acc.tags?.forEach(t => tags.add(t)));
-    setAvailableTags(Array.from(tags));
   };
 
   const addAccount = (account: Omit<TwoFactorAccount, "id">) => {

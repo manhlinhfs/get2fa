@@ -42,7 +42,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
         setter(text);
         toast.success(t('add_form.paste_clipboard'));
       }
-    } catch (err) {
+    } catch {
       toast.error(t('add_form.clipboard_error'));
     }
   };

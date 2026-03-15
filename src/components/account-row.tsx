@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence, Reorder, useDragControls } from "framer-motion";
 import { Trash2, Pencil, CheckCircle2, GripVertical } from "lucide-react";
 import { toast } from "sonner";
@@ -39,22 +39,25 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
   const [period, setPeriod] = useState(30);
 
   const controls = useDragControls();
+  const totp = useMemo(() => {
+    try {
+      return new OTPAuth.TOTP({
+        issuer: account.issuer || "2FA",
+        label: account.label,
+        algorithm: "SHA1",
+        digits: 6,
+        period: 30,
+        secret: OTPAuth.Secret.fromBase32(account.secret),
+      });
+    } catch {
+      return null;
+    }
+  }, [account.secret, account.label, account.issuer]);
 
   // Timer Logic Isolated to this Component
   useEffect(() => {
-    let totp: OTPAuth.TOTP;
-    try {
-        totp = new OTPAuth.TOTP({
-            issuer: account.issuer || "2FA",
-            label: account.label,
-            algorithm: "SHA1",
-            digits: 6,
-            period: 30,
-            secret: OTPAuth.Secret.fromBase32(account.secret),
-        });
-    } catch (e) {
-        setToken("ERROR");
-        return;
+    if (!totp) {
+      return;
     }
 
     const update = () => {
@@ -66,7 +69,7 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
             setToken(`${newToken.slice(0, 3)} ${newToken.slice(3)}`);
             setRemaining(newRemaining);
             setPeriod(newPeriod);
-        } catch (e) {
+        } catch {
             setToken("ERROR");
         }
     };
@@ -74,13 +77,14 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
     update(); // Initial run
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, [account.secret, account.label, account.issuer]); // Only re-init if account details change
+  }, [totp]); // Only re-init if account details change
 
-  const progress = remaining / period;
-  const isExpiring = remaining < 5;
+  const displayToken = totp ? token : "ERROR";
+  const progress = totp ? remaining / period : 0;
+  const isExpiring = totp ? remaining < 5 : true;
   
   const handleCopy = () => {
-    const rawToken = token.replace(/\s/g, "");
+    const rawToken = displayToken.replace(/\s/g, "");
     if (rawToken && rawToken !== "ERROR") {
       navigator.clipboard.writeText(rawToken);
       toast.success(t('account_row.copied'));
@@ -164,7 +168,7 @@ export function AccountRow({ account, onRemove, onUpdate, availableTags, isDragg
                         "font-mono text-2xl sm:text-3xl md:text-4xl font-bold tracking-[0.15em] transition-all duration-300 select-none",
                         isExpiring ? "text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" : "text-foreground group-hover/token:text-primary"
                     )}>
-                        {token}
+                        {displayToken}
                     </div>
                 </div>
                  

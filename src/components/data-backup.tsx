@@ -53,7 +53,7 @@ export function DataBackup({ accounts, onImport }: DataBackupProps) {
       URL.revokeObjectURL(url);
       
       toast.success(t('backup.export_success'));
-    } catch (error) {
+    } catch {
       toast.error(t('backup.export_error'));
     }
   };
