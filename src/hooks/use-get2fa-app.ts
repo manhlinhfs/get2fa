@@ -4,6 +4,7 @@ import {
   addAccount as addWorkspaceAccount,
   createWorkspace as createWorkspaceData,
   deleteWorkspace as deleteWorkspaceData,
+  moveAccountToWorkspace,
   removeAccount as removeWorkspaceAccount,
   renameWorkspace as renameWorkspaceData,
   reorderWorkspaceAccounts,
@@ -77,8 +78,13 @@ export function useGet2FAApp() {
     addAccount(accountInput: AccountInput) {
       persist(addWorkspaceAccount(appData, activeWorkspace.id, accountInput));
     },
-    updateAccount(account: TwoFactorAccount) {
-      persist(updateWorkspaceAccount(appData, activeWorkspace.id, account));
+    updateAccount(account: TwoFactorAccount, destinationWorkspaceId = activeWorkspace.id) {
+      const nextAppData =
+        destinationWorkspaceId === activeWorkspace.id
+          ? updateWorkspaceAccount(appData, activeWorkspace.id, account)
+          : moveAccountToWorkspace(appData, activeWorkspace.id, destinationWorkspaceId, account);
+
+      persist(nextAppData);
     },
     removeAccount(accountId: string) {
       persist(removeWorkspaceAccount(appData, activeWorkspace.id, accountId));

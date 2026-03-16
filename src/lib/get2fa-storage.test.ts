@@ -4,6 +4,7 @@ import {
   addAccount,
   createWorkspace,
   deleteWorkspace,
+  moveAccountToWorkspace,
   renameWorkspace,
   reorderWorkspaceAccounts,
 } from "./get2fa-data";
@@ -101,6 +102,59 @@ describe("workspace reducers", () => {
     const result = reorderWorkspaceAccounts(initial, initial.currentWorkspaceId, ["a2", "a1"]);
 
     expect(result.workspaces[0].accounts.map((account) => account.id)).toEqual(["a2", "a1"]);
+  });
+
+  it("moves an account to the top of another workspace", () => {
+    const initial = {
+      version: 1 as const,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "github",
+              secret: "AAAA",
+              issuer: "GitHub",
+              label: "GitHub",
+              tags: ["work"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+        {
+          id: "work",
+          name: "Work",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "aws",
+              secret: "BBBB",
+              issuer: "AWS",
+              label: "AWS",
+              tags: ["cloud"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    };
+
+    const result = moveAccountToWorkspace(initial, "default", "work", {
+      ...initial.workspaces[0].accounts[0],
+      label: "GitHub Prod",
+      updatedAt: "2026-03-16T00:00:00.000Z",
+    });
+
+    expect(result.workspaces[0].accounts).toHaveLength(0);
+    expect(result.workspaces[1].accounts.map((account) => account.id)).toEqual(["github", "aws"]);
+    expect(result.workspaces[1].accounts[0].label).toBe("GitHub Prod");
   });
 });
 

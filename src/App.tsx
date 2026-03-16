@@ -16,14 +16,8 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { parseImportedBackup } from "@/lib/get2fa-backup";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox";
+
+const APP_LOGO_SRC = "/icon.svg?v=20260317-3";
 
 function TwoFactorApp() {
   const { t } = useTranslation();
@@ -46,17 +40,22 @@ function TwoFactorApp() {
     createWorkspace,
     updateAccount,
   } = useGet2FAApp();
-  const [tagSearch, setTagSearch] = useState("");
   const [workspaceDialogMode, setWorkspaceDialogMode] = useState<"create" | "rename">("create");
   const [workspaceDialogOpen, setWorkspaceDialogOpen] = useState(false);
+
+  const applyTagFilter = (nextTag: string | null) => {
+    setFilterTag(nextTag);
+    window.setTimeout(() => {
+      const activeElement = document.activeElement;
+      if (activeElement instanceof HTMLElement) {
+        activeElement.blur();
+      }
+    }, 0);
+  };
 
   const filteredAccounts = filterTag
     ? accounts.filter(a => a.tags?.includes(filterTag))
     : accounts;
-
-  const filteredTagsForSearch = availableTags.filter(tag =>
-    tag.toLowerCase().includes(tagSearch.toLowerCase())
-  );
 
   const handleImport = (payload: unknown) => {
     const parsedBackup = parseImportedBackup(payload);
@@ -99,7 +98,7 @@ function TwoFactorApp() {
               whileTap={{ scale: 0.98 }}
             >
               <div className="relative flex items-center justify-center h-8 w-8 md:h-10 md:w-10 bg-background/50 border border-border/50 rounded-lg md:rounded-xl shadow-sm group-hover:shadow-primary/20 transition-all duration-300">
-                 <img src="/icons/get2fa.svg" alt="App Logo" className="h-5 w-5 md:h-6 md:w-6 object-contain" />
+                 <img src={APP_LOGO_SRC} alt="App Logo" className="h-5 w-5 md:h-6 md:w-6 object-contain" />
                  <motion.div
                    className="absolute inset-0 rounded-lg md:rounded-xl bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"
                    initial={false}
@@ -155,31 +154,34 @@ function TwoFactorApp() {
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center gap-3 py-2 flex-wrap"
           >
-            <Combobox
-              value={filterTag}
-              onValueChange={(val) => {
-                setFilterTag(val);
-                setTagSearch(""); // Reset search on select
-              }}
-              inputValue={tagSearch}
-              onInputValueChange={setTagSearch}
-            >
-              <ComboboxInput
-                placeholder={t('filter.placeholder')}
-                className="w-full sm:w-[250px]"
-                showClear={!!filterTag}
-              />
-              <ComboboxContent>
-                <ComboboxList>
-                  <ComboboxEmpty>{t('filter.no_tags')}</ComboboxEmpty>
-                  {filteredTagsForSearch.map((tag) => (
-                    <ComboboxItem key={tag} value={tag}>
-                      {tag}
-                    </ComboboxItem>
-                  ))}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
+            <div className="flex w-full sm:w-auto items-center gap-2">
+              <label className="sr-only" htmlFor="tag-filter">
+                {t("filter.placeholder")}
+              </label>
+              <select
+                aria-label={t("filter.placeholder")}
+                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-[250px]"
+                id="tag-filter"
+                onChange={(event) => applyTagFilter(event.target.value || null)}
+                value={filterTag ?? ""}
+              >
+                <option value="">{t("filter.placeholder")}</option>
+                {availableTags.map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+              </select>
+              {filterTag && (
+                <button
+                  className="shrink-0 rounded-md border border-border px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  onClick={() => applyTagFilter(null)}
+                  type="button"
+                >
+                  {t("filter.clear")}
+                </button>
+              )}
+            </div>
 
             {/* Popular Tags Quick Access */}
             {topTags.length > 0 && (
@@ -195,7 +197,7 @@ function TwoFactorApp() {
                         ? "bg-primary/10 text-primary border-primary/20 shadow-[0_0_10px_-3px_var(--primary)]" 
                         : "bg-background hover:bg-muted border border-border/50 text-muted-foreground hover:text-foreground"
                     )}
-                    onClick={() => setFilterTag(tag === filterTag ? null : tag)}
+                    onClick={() => applyTagFilter(tag === filterTag ? null : tag)}
                   >
                     {tag}
                   </Badge>
@@ -225,16 +227,18 @@ function TwoFactorApp() {
                  <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
                      <FilterX className="h-12 w-12 opacity-20" />
                      <p>{t('filter.no_match')} <span className="font-semibold text-foreground">{filterTag}</span></p>
-                     <button onClick={() => setFilterTag(null)} className="text-primary hover:underline text-sm font-medium">{t('filter.clear')}</button>
+                     <button onClick={() => applyTagFilter(null)} className="text-primary hover:underline text-sm font-medium">{t('filter.clear')}</button>
                  </div>
              ) : (
                 <AccountSortableList
                   accounts={accounts}
                   availableTags={availableTags}
+                  currentWorkspaceId={activeWorkspace.id}
                   onRemove={removeAccount}
                   onReorder={reorderAccounts}
                   onUpdate={updateAccount}
                   visibleAccounts={filteredAccounts}
+                  workspaces={workspaces}
                 />
              )}
         </div>

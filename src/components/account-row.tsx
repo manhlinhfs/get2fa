@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, Pencil, CheckCircle2, GripVertical } from "lucide-react";
 import { toast } from "sonner";
-import type { TwoFactorAccount } from "@/lib/get2fa-data";
+import type { TwoFactorAccount, Workspace } from "@/lib/get2fa-data";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTotpClock } from "@/hooks/use-totp-clock";
@@ -22,9 +22,11 @@ import { useTranslation, Trans } from "react-i18next";
 
 interface AccountRowProps {
   account: TwoFactorAccount;
+  currentWorkspaceId: string;
   onRemove: (id: string) => void;
-  onUpdate: (account: TwoFactorAccount) => void;
+  onUpdate: (account: TwoFactorAccount, destinationWorkspaceId?: string) => void;
   availableTags: string[];
+  workspaces: Workspace[];
   dragHandleProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
   dragHandleRef?: (node: HTMLButtonElement | null) => void;
   isDragging?: boolean;
@@ -33,9 +35,11 @@ interface AccountRowProps {
 
 export function AccountRow({
   account,
+  currentWorkspaceId,
   onRemove,
   onUpdate,
   availableTags,
+  workspaces,
   dragHandleProps,
   dragHandleRef,
   isDragging = false,
@@ -89,6 +93,9 @@ export function AccountRow({
     "{{label}}",
     account.label,
   );
+  const copyActionLabel = t("account_row.copy_code");
+  const editActionLabel = t("account_row.edit");
+  const deleteActionLabel = t("account_row.delete_action");
   
   const handleCopy = () => {
     const rawToken = displayToken.replace(/\s/g, "");
@@ -159,9 +166,12 @@ export function AccountRow({
             {/* Right Side: Token & Actions */}
             <div className="flex items-center justify-between md:justify-end w-full md:w-auto gap-4 md:gap-8 pl-2 md:pl-0">
                 {/* Token Display */}
-                <div 
-                    className="relative group/token cursor-pointer"
+                <button
+                    aria-label={copyActionLabel}
+                    className="relative group/token cursor-pointer rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                     onClick={handleCopy}
+                    title={copyActionLabel}
+                    type="button"
                 >
                     <div className={cn(
                         "font-mono text-2xl sm:text-3xl md:text-4xl font-bold tracking-[0.15em] transition-all duration-300 select-none",
@@ -169,7 +179,7 @@ export function AccountRow({
                     )}>
                         {displayToken}
                     </div>
-                </div>
+                </button>
                  
                  {/* Circular Timer */}
                  <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center shrink-0">
@@ -206,16 +216,20 @@ export function AccountRow({
                 {/* Quick Actions */}
                 <div className="flex md:flex-col gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-background/50 md:bg-transparent rounded-lg p-1 md:p-0 backdrop-blur-sm md:backdrop-blur-none border md:border-none border-border/50 absolute md:static top-4 right-4 md:auto z-20">
                     <Button 
+                        aria-label={editActionLabel}
                         variant="ghost" size="icon" 
                         onClick={(e) => { e.stopPropagation(); setIsEditing(true); }} 
                         className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full"
+                        title={editActionLabel}
                     >
                         <Pencil className="h-4 w-4" />
                     </Button>
                     <Button 
+                        aria-label={deleteActionLabel}
                         variant="ghost" size="icon" 
                         onClick={(e) => { e.stopPropagation(); setIsDeleting(true); }} 
                         className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
+                        title={deleteActionLabel}
                     >
                         <Trash2 className="h-4 w-4" />
                     </Button>
@@ -242,11 +256,14 @@ export function AccountRow({
 
         {/* Edit Dialog */}
         <EditAccountDialog 
+            key={`${account.id}-${currentWorkspaceId}-${isEditing ? "open" : "closed"}`}
             account={account}
+            currentWorkspaceId={currentWorkspaceId}
             open={isEditing}
             onOpenChange={setIsEditing}
             onUpdate={onUpdate}
             availableTags={availableTags}
+            workspaces={workspaces}
         />
 
         {/* Delete Confirmation */}

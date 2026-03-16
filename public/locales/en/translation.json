@@ -1,8 +1,8 @@
 {
   "app": {
     "title": "get2fa",
-    "ready": "Ready to secure your digital life.",
-    "enter_key": "Enter a secret key above to generate your first 2FA code."
+    "ready": "No accounts yet.",
+    "enter_key": "Paste a secret key above to add your first account."
   },
   "filter": {
     "placeholder": "Filter by tag...",
@@ -15,7 +15,7 @@
     "language": "Language",
     "theme": "Theme",
     "help": "Help",
-    "backup": "Data Backup",
+    "backup": "Backup",
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete",
@@ -24,19 +24,22 @@
     "add_tag": "Add tag..."
   },
   "add_form": {
-    "paste_secret_expanded": "Paste your Secret Key here",
-    "paste_secret_collapsed": "Paste 2FA Secret Key to add new...",
+    "paste_secret_expanded": "Paste a secret key",
+    "paste_secret_collapsed": "Paste a secret key",
     "paste_clipboard": "Pasted from clipboard",
     "clipboard_error": "Clipboard access denied",
-    "service_placeholder": "Service Name (e.g. Google, Facebook)",
+    "service_placeholder": "Account or service name",
     "add_tags_placeholder": "Add tags...",
     "save_authenticator": "Save account",
     "success": "Account added successfully"
   },
   "account_row": {
     "copied": "Copied code to clipboard",
-    "copied_short": "Copied!",
+    "copied_short": "Copied",
     "drag_handle": "Reorder {{label}}",
+    "copy_code": "Copy code",
+    "edit": "Edit",
+    "delete_action": "Delete",
     "delete_title": "Delete Account",
     "delete_desc": "Are you sure you want to remove <1>{{label}}</1>? This action cannot be undone."
   },
@@ -44,6 +47,9 @@
     "title": "Edit Account",
     "account_name": "Account Name",
     "secret_key": "Secret Key",
+    "workspace": "Workspace",
+    "description": "Update the account details and choose which workspace should contain it.",
+    "move_success": "Moved {{label}} to {{workspace}}",
     "save_changes": "Save Changes"
   },
   "help_dialog": {
@@ -58,10 +64,10 @@
     "risk_3": "Use \"Incognito/Private\" mode (data vanishes on close).",
     "risk_4": "Reset your device.",
     "rec_title": "Our Recommendation",
-    "rec_desc": "Always use the <1>Settings {{icon}} > Export Backup</1> feature immediately after adding new accounts. Keep the backup file in a safe place (Cloud, USB)."
+    "rec_desc": "After you add an account, export a backup file and keep it somewhere safe."
   },
   "backup": {
-    "title": "Data Management",
+    "title": "Data backup",
     "export": "Export Backup",
     "export_current": "Export current workspace",
     "center": "Backup Center",
@@ -75,5 +81,18 @@
     "import_info": "No new accounts found to import (duplicates skipped)",
     "import_bundle_info": "No workspaces found to import",
     "import_error": "Invalid backup file"
+  },
+  "workspace": {
+    "switcher": "Workspace",
+    "create": "New workspace",
+    "rename": "Rename workspace",
+    "delete": "Delete workspace",
+    "dialog": {
+      "create_title": "Create workspace",
+      "rename_title": "Rename workspace",
+      "name_label": "Workspace name",
+      "create_action": "Create workspace",
+      "rename_action": "Save workspace"
+    }
   }
 }

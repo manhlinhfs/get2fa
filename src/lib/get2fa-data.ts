@@ -119,6 +119,49 @@ export function updateAccount(appData: AppData, workspaceId: string, account: Tw
   }));
 }
 
+export function moveAccountToWorkspace(
+  appData: AppData,
+  sourceWorkspaceId: string,
+  destinationWorkspaceId: string,
+  account: TwoFactorAccount,
+): AppData {
+  if (sourceWorkspaceId === destinationWorkspaceId) {
+    return updateAccount(appData, sourceWorkspaceId, account);
+  }
+
+  const nextUpdatedAt = nowIso();
+  const destinationWorkspace = appData.workspaces.find(
+    (workspace) => workspace.id === destinationWorkspaceId,
+  );
+
+  if (!destinationWorkspace) {
+    return appData;
+  }
+
+  return {
+    ...appData,
+    workspaces: appData.workspaces.map((workspace) => {
+      if (workspace.id === sourceWorkspaceId) {
+        return {
+          ...workspace,
+          updatedAt: nextUpdatedAt,
+          accounts: workspace.accounts.filter((currentAccount) => currentAccount.id !== account.id),
+        };
+      }
+
+      if (workspace.id === destinationWorkspaceId) {
+        return {
+          ...workspace,
+          updatedAt: nextUpdatedAt,
+          accounts: [account, ...workspace.accounts],
+        };
+      }
+
+      return workspace;
+    }),
+  };
+}
+
 export function removeAccount(appData: AppData, workspaceId: string, accountId: string): AppData {
   return updateWorkspace(appData, workspaceId, (workspace) => ({
     ...workspace,

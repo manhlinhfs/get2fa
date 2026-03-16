@@ -36,6 +36,6 @@ const preset = {
 };
 
 export default defineConfig({
-  images: ["public/icons/get2fa.svg"],
+  images: ["public/icon.svg"],
   preset,
 });

@@ -1,23 +1,45 @@
 {
-  "app": { "title": "get2fa", "ready": "Prêt à sécuriser votre vie numérique.", "enter_key": "Entrez une clé secrète ci-dessus pour générer votre premier code 2FA." },
-  "filter": { "placeholder": "Filtrer par étiquette...", "no_tags": "Aucune étiquette trouvée.", "popular": "Populaire:", "no_match": "Aucun compte ne correspond à l'étiquette:", "clear": "Effacer le filtre" },
-  "common": { 
-    "language": "Langue", "theme": "Thème", "help": "Aide", "backup": "Sauvegarde des données",
-    "cancel": "Annuler", "save": "Enregistrer", "delete": "Supprimer", "edit": "Modifier", "tags": "Étiquettes", "add_tag": "Ajouter une étiquette..."
+  "app": {
+    "title": "get2fa",
+    "ready": "Aucun compte pour le moment.",
+    "enter_key": "Collez une clé secrète ci-dessus pour ajouter votre premier compte."
+  },
+  "filter": {
+    "placeholder": "Filtrer par étiquette...",
+    "no_tags": "Aucune étiquette trouvée.",
+    "popular": "Populaire:",
+    "no_match": "Aucun compte ne correspond à l'étiquette:",
+    "clear": "Effacer le filtre"
+  },
+  "common": {
+    "language": "Langue",
+    "theme": "Thème",
+    "help": "Aide",
+    "backup": "Sauvegarde",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "tags": "Étiquettes",
+    "add_tag": "Ajouter une étiquette..."
   },
   "add_form": {
-    "paste_secret_expanded": "Collez votre clé secrète ici",
-    "paste_secret_collapsed": "Collez la clé secrète 2FA pour ajouter...",
+    "paste_secret_expanded": "Collez une clé secrète",
+    "paste_secret_collapsed": "Collez une clé secrète",
     "paste_clipboard": "Collé depuis le presse-papiers",
     "clipboard_error": "Accès au presse-papiers refusé",
-    "service_placeholder": "Nom du service (ex. Google, Facebook)",
+    "service_placeholder": "Nom du compte ou du service",
     "add_tags_placeholder": "Ajouter des étiquettes...",
     "save_authenticator": "Enregistrer le compte",
     "success": "Compte ajouté avec succès"
   },
   "account_row": {
     "copied": "Code copié dans le presse-papiers",
-    "copied_short": "Copié !",
+    "copied_short": "Copié",
+    "drag_handle": "Réorganiser {{label}}",
+    "copy_code": "Copier le code",
+    "edit": "Modifier",
+    "delete_action": "Supprimer",
     "delete_title": "Supprimer le compte",
     "delete_desc": "Êtes-vous sûr de vouloir supprimer <1>{{label}}</1> ? Cette action est irréversible."
   },
@@ -25,6 +47,9 @@
     "title": "Modifier le compte",
     "account_name": "Nom du compte",
     "secret_key": "Clé secrète",
+    "workspace": "Workspace",
+    "description": "Mettez à jour les détails du compte et choisissez l’espace de travail qui doit le contenir.",
+    "move_success": "{{label}} a été déplacé vers {{workspace}}",
     "save_changes": "Enregistrer les modifications"
   },
   "help_dialog": {
@@ -39,17 +64,35 @@
     "risk_3": "Utilisez le mode \"Incognito/Privé\" (les données disparaissent à la fermeture).",
     "risk_4": "Réinitialisez votre appareil.",
     "rec_title": "Notre recommandation",
-    "rec_desc": "Utilisez toujours la fonction <1>Paramètres {{icon}} > Exporter la sauvegarde</1> immédiatement après l'ajout de nouveaux comptes. Conservez le fichier de sauvegarde dans un endroit sûr (Cloud, clé USB)."
+    "rec_desc": "Après avoir ajouté un compte, exportez une sauvegarde et conservez le fichier dans un endroit sûr."
   },
   "backup": {
-    "title": "Gestion des données",
+    "title": "Sauvegarde des données",
     "export": "Exporter la sauvegarde",
+    "export_current": "Exporter le workspace actuel",
+    "center": "Centre de sauvegarde",
+    "export_selected": "Exporter les workspaces sélectionnés",
     "import": "Importer la sauvegarde",
     "no_data": "Aucune donnée à exporter",
     "export_success": "Sauvegarde téléchargée avec succès",
     "export_error": "Échec de l'exportation des données",
     "import_success": "{{count}} comptes importés avec succès",
+    "import_bundle_success": "{{count}} workspaces importés avec succès",
     "import_info": "Aucun nouveau compte trouvé à importer (doublons ignorés)",
+    "import_bundle_info": "Aucun workspace trouvé à importer",
     "import_error": "Fichier de sauvegarde invalide"
+  },
+  "workspace": {
+    "switcher": "Workspace",
+    "create": "Créer un workspace",
+    "rename": "Renommer le workspace",
+    "delete": "Supprimer le workspace",
+    "dialog": {
+      "create_title": "Créer un workspace",
+      "rename_title": "Renommer le workspace",
+      "name_label": "Nom du workspace",
+      "create_action": "Créer le workspace",
+      "rename_action": "Enregistrer le workspace"
+    }
   }
 }

@@ -1,23 +1,45 @@
 {
-  "app": { "title": "get2fa", "ready": "Bereit, Ihr digitales Leben zu sichern.", "enter_key": "Geben Sie oben einen geheimen Schlüssel ein, um Ihren ersten 2FA-Code zu generieren." },
-  "filter": { "placeholder": "Nach Tag filtern...", "no_tags": "Keine Tags gefunden.", "popular": "Beliebt:", "no_match": "Keine Konten entsprechen dem Tag:", "clear": "Filter löschen" },
-  "common": { 
-    "language": "Sprache", "theme": "Thema", "help": "Hilfe", "backup": "Datensicherung",
-    "cancel": "Abbrechen", "save": "Speichern", "delete": "Löschen", "edit": "Bearbeiten", "tags": "Tags", "add_tag": "Tag hinzufügen..."
+  "app": {
+    "title": "get2fa",
+    "ready": "Noch keine Konten.",
+    "enter_key": "Fügen Sie oben einen geheimen Schlüssel ein, um Ihr erstes Konto hinzuzufügen."
+  },
+  "filter": {
+    "placeholder": "Nach Tag filtern...",
+    "no_tags": "Keine Tags gefunden.",
+    "popular": "Beliebt:",
+    "no_match": "Keine Konten entsprechen dem Tag:",
+    "clear": "Filter löschen"
+  },
+  "common": {
+    "language": "Sprache",
+    "theme": "Thema",
+    "help": "Hilfe",
+    "backup": "Datensicherung",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "tags": "Tags",
+    "add_tag": "Tag hinzufügen..."
   },
   "add_form": {
-    "paste_secret_expanded": "Fügen Sie hier Ihren geheimen Schlüssel ein",
-    "paste_secret_collapsed": "2FA-Geheimschlüssel einfügen, um neuen hinzuzufügen...",
+    "paste_secret_expanded": "Geheimen Schlüssel einfügen",
+    "paste_secret_collapsed": "Geheimen Schlüssel einfügen",
     "paste_clipboard": "Aus der Zwischenablage eingefügt",
     "clipboard_error": "Zugriff auf Zwischenablage verweigert",
-    "service_placeholder": "Dienstname (z.B. Google, Facebook)",
+    "service_placeholder": "Kontoname oder Dienst",
     "add_tags_placeholder": "Tags hinzufügen...",
     "save_authenticator": "Konto speichern",
     "success": "Konto erfolgreich hinzugefügt"
   },
   "account_row": {
     "copied": "Code in die Zwischenablage kopiert",
-    "copied_short": "Kopiert!",
+    "copied_short": "Kopiert",
+    "drag_handle": "{{label}} neu anordnen",
+    "copy_code": "Code kopieren",
+    "edit": "Bearbeiten",
+    "delete_action": "Löschen",
     "delete_title": "Konto löschen",
     "delete_desc": "Sind Sie sicher, dass Sie <1>{{label}}</1> entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
   },
@@ -25,6 +47,9 @@
     "title": "Konto bearbeiten",
     "account_name": "Kontoname",
     "secret_key": "Geheimer Schlüssel",
+    "workspace": "Workspace",
+    "description": "Aktualisieren Sie die Kontodaten und wählen Sie den Workspace, der dieses Konto enthalten soll.",
+    "move_success": "{{label}} wurde nach {{workspace}} verschoben",
     "save_changes": "Änderungen speichern"
   },
   "help_dialog": {
@@ -39,17 +64,35 @@
     "risk_3": "Den \"Inkognito/Privat\"-Modus verwenden (Daten verschwinden beim Schließen).",
     "risk_4": "Ihr Gerät zurücksetzen.",
     "rec_title": "Unsere Empfehlung",
-    "rec_desc": "Verwenden Sie immer sofort nach dem Hinzufügen neuer Konten die Funktion <1>Einstellungen {{icon}} > Backup exportieren</1>. Bewahren Sie die Backup-Datei an einem sicheren Ort auf (Cloud, USB)."
+    "rec_desc": "Exportieren Sie nach dem Hinzufügen eines Kontos sofort eine Sicherungskopie und bewahren Sie die Datei an einem sicheren Ort auf."
   },
   "backup": {
-    "title": "Datenverwaltung",
+    "title": "Datensicherung",
     "export": "Backup exportieren",
+    "export_current": "Aktuellen Workspace exportieren",
+    "center": "Backup-Center",
+    "export_selected": "Ausgewählte Workspaces exportieren",
     "import": "Backup importieren",
     "no_data": "Keine Daten zum Exportieren",
     "export_success": "Backup erfolgreich heruntergeladen",
     "export_error": "Fehler beim Exportieren der Daten",
     "import_success": "{{count}} Konten erfolgreich importiert",
+    "import_bundle_success": "{{count}} Workspaces erfolgreich importiert",
     "import_info": "Keine neuen Konten zum Importieren gefunden (Duplikate übersprungen)",
+    "import_bundle_info": "Keine Workspaces zum Importieren gefunden",
     "import_error": "Ungültige Backup-Datei"
+  },
+  "workspace": {
+    "switcher": "Workspace",
+    "create": "Workspace erstellen",
+    "rename": "Workspace umbenennen",
+    "delete": "Workspace löschen",
+    "dialog": {
+      "create_title": "Workspace erstellen",
+      "rename_title": "Workspace umbenennen",
+      "name_label": "Workspace-Name",
+      "create_action": "Workspace erstellen",
+      "rename_action": "Workspace speichern"
+    }
   }
 }

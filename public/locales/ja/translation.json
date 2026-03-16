@@ -1,23 +1,45 @@
 {
-  "app": { "title": "get2fa", "ready": "デジタルライフを守る準備ができました。", "enter_key": "上にシークレットキーを入力して、最初の2FAコードを生成してください。" },
-  "filter": { "placeholder": "タグでフィルタリング...", "no_tags": "タグが見つかりません。", "popular": "人気:", "no_match": "タグに一致するアカウントはありません:", "clear": "フィルタをクリア" },
-  "common": { 
-    "language": "言語", "theme": "テーマ", "help": "ヘルプ", "backup": "データバックアップ",
-    "cancel": "キャンセル", "save": "保存", "delete": "削除", "edit": "編集", "tags": "タグ", "add_tag": "タグを追加..."
+  "app": {
+    "title": "get2fa",
+    "ready": "まだアカウントはありません。",
+    "enter_key": "上にシークレットキーを貼り付けて最初のアカウントを追加してください。"
+  },
+  "filter": {
+    "placeholder": "タグでフィルタリング...",
+    "no_tags": "タグが見つかりません。",
+    "popular": "人気:",
+    "no_match": "タグに一致するアカウントはありません:",
+    "clear": "フィルタをクリア"
+  },
+  "common": {
+    "language": "言語",
+    "theme": "テーマ",
+    "help": "ヘルプ",
+    "backup": "バックアップ",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集",
+    "tags": "タグ",
+    "add_tag": "タグを追加..."
   },
   "add_form": {
-    "paste_secret_expanded": "ここにシークレットキーを貼り付けてください",
-    "paste_secret_collapsed": "新しい2FAシークレットキーを貼り付けて追加...",
+    "paste_secret_expanded": "シークレットキーを貼り付け",
+    "paste_secret_collapsed": "シークレットキーを貼り付け",
     "paste_clipboard": "クリップボードから貼り付けました",
     "clipboard_error": "クリップボードへのアクセスが拒否されました",
-    "service_placeholder": "サービス名 (例: Google, Facebook)",
+    "service_placeholder": "アカウント名またはサービス名",
     "add_tags_placeholder": "タグを追加...",
     "save_authenticator": "アカウントを保存",
     "success": "アカウントが正常に追加されました"
   },
   "account_row": {
     "copied": "コードをクリップボードにコピーしました",
-    "copied_short": "コピーしました！",
+    "copied_short": "コピーしました",
+    "drag_handle": "{{label}} を並べ替え",
+    "copy_code": "コードをコピー",
+    "edit": "編集",
+    "delete_action": "削除",
     "delete_title": "アカウントの削除",
     "delete_desc": "本当に <1>{{label}}</1> を削除してもよろしいですか？この操作は元に戻せません。"
   },
@@ -25,6 +47,9 @@
     "title": "アカウントの編集",
     "account_name": "アカウント名",
     "secret_key": "シークレットキー",
+    "workspace": "ワークスペース",
+    "description": "アカウント情報を更新し、このアカウントを含めるワークスペースを選択します。",
+    "move_success": "{{label}} を {{workspace}} に移動しました",
     "save_changes": "変更を保存"
   },
   "help_dialog": {
@@ -39,17 +64,35 @@
     "risk_3": "「シークレット/プライベート」モードを使用した場合（閉じるとデータは消えます）。",
     "risk_4": "デバイスをリセットした場合。",
     "rec_title": "推奨事項",
-    "rec_desc": "新しいアカウントを追加した後は、必ずすぐに<1>設定 {{icon}} > バックアップのエクスポート</1>機能を使用してください。バックアップファイルは安全な場所（クラウド、USB）に保管してください。"
+    "rec_desc": "アカウントを追加したら、すぐにバックアップをエクスポートして安全な場所に保存してください。"
   },
   "backup": {
-    "title": "データ管理",
+    "title": "データバックアップ",
     "export": "バックアップのエクスポート",
+    "export_current": "現在の workspace をエクスポート",
+    "center": "バックアップセンター",
+    "export_selected": "選択した workspaces をエクスポート",
     "import": "バックアップのインポート",
     "no_data": "エクスポートするデータがありません",
     "export_success": "バックアップが正常にダウンロードされました",
     "export_error": "データのエクスポートに失敗しました",
     "import_success": "{{count}} 件のアカウントを正常にインポートしました",
+    "import_bundle_success": "{{count}} 件の workspaces を正常にインポートしました",
     "import_info": "インポートする新しいアカウントは見つかりませんでした（重複はスキップされました）",
+    "import_bundle_info": "インポートする workspace が見つかりませんでした",
     "import_error": "無効なバックアップファイルです"
+  },
+  "workspace": {
+    "switcher": "Workspace",
+    "create": "Workspace を作成",
+    "rename": "Workspace 名を変更",
+    "delete": "Workspace を削除",
+    "dialog": {
+      "create_title": "Workspace を作成",
+      "rename_title": "Workspace 名を変更",
+      "name_label": "Workspace 名",
+      "create_action": "Workspace を作成",
+      "rename_action": "Workspace を保存"
+    }
   }
 }

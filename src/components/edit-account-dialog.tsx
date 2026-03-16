@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { X, Save } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,27 +8,46 @@ import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import type { TwoFactorAccount } from "@/lib/get2fa-data";
+import type { TwoFactorAccount, Workspace } from "@/lib/get2fa-data";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
 
 interface EditAccountDialogProps {
   account: TwoFactorAccount;
+  currentWorkspaceId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onUpdate: (account: TwoFactorAccount) => void;
+  onUpdate: (account: TwoFactorAccount, destinationWorkspaceId?: string) => void;
   availableTags: string[];
+  workspaces: Workspace[];
 }
 
-export function EditAccountDialog({ account, open, onOpenChange, onUpdate, availableTags }: EditAccountDialogProps) {
+export function EditAccountDialog({
+  account,
+  currentWorkspaceId,
+  open,
+  onOpenChange,
+  onUpdate,
+  availableTags,
+  workspaces,
+}: EditAccountDialogProps) {
   const { t } = useTranslation();
   const [label, setLabel] = useState(account.label);
   const [secret, setSecret] = useState(account.secret);
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>(account.tags || []);
+  const [workspaceId, setWorkspaceId] = useState(currentWorkspaceId);
 
   const handleAddTag = () => {
     const cleanTag = tagInput.trim();
@@ -54,13 +74,24 @@ export function EditAccountDialog({ account, open, onOpenChange, onUpdate, avail
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onUpdate({
+    const nextAccount = {
       ...account,
       label,
       secret: secret.replace(/[\s-]/g, "").toUpperCase(),
       tags,
       updatedAt: new Date().toISOString(),
-    });
+    };
+
+    onUpdate(nextAccount, workspaceId);
+
+    if (workspaceId !== currentWorkspaceId) {
+      const nextWorkspaceName =
+        workspaces.find((workspace) => workspace.id === workspaceId)?.name ?? workspaceId;
+      toast.success(
+        t("edit_dialog.move_success", { label: nextAccount.label, workspace: nextWorkspaceName }),
+      );
+    }
+
     onOpenChange(false);
   };
 
@@ -69,6 +100,9 @@ export function EditAccountDialog({ account, open, onOpenChange, onUpdate, avail
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{t('edit_dialog.title')}</DialogTitle>
+          <DialogDescription className="sr-only">
+            {t("edit_dialog.description")}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-4 py-4">
           <div className="grid gap-2">
@@ -87,6 +121,22 @@ export function EditAccountDialog({ account, open, onOpenChange, onUpdate, avail
               onChange={(e) => setSecret(e.target.value)}
               className="font-mono uppercase"
             />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="edit-workspace">{t("edit_dialog.workspace")}</Label>
+            <Select onValueChange={setWorkspaceId} value={workspaceId}>
+              <SelectTrigger className="w-full" id="edit-workspace">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {workspaces.map((workspace) => (
+                  <SelectItem key={workspace.id} value={workspace.id}>
+                    {workspace.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="grid gap-2">

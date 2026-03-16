@@ -12,11 +12,11 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: [
+        "icon.svg",
         "favicon.ico",
         "favicon-16x16.png",
         "favicon-32x32.png",
         "apple-touch-icon.png",
-        "icons/get2fa.svg",
       ],
       manifest: {
         id: "/",
@@ -30,17 +30,17 @@ export default defineConfig({
         scope: "/",
         icons: [
           {
-            src: "pwa-192x192.png",
+            src: "pwa-192x192.png?v=20260317-3",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "pwa-512x512.png",
+            src: "pwa-512x512.png?v=20260317-3",
             sizes: "512x512",
             type: "image/png",
           },
           {
-            src: "maskable-512x512.png",
+            src: "maskable-512x512.png?v=20260317-3",
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",

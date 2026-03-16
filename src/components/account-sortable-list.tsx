@@ -21,15 +21,17 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 import { AccountRow } from "@/components/account-row";
-import type { TwoFactorAccount } from "@/lib/get2fa-data";
+import type { TwoFactorAccount, Workspace } from "@/lib/get2fa-data";
 
 interface AccountSortableListProps {
   accounts: TwoFactorAccount[];
   visibleAccounts: TwoFactorAccount[];
   availableTags: string[];
+  currentWorkspaceId: string;
   onRemove: (id: string) => void;
   onReorder: (orderedIds: string[]) => void;
-  onUpdate: (account: TwoFactorAccount) => void;
+  onUpdate: (account: TwoFactorAccount, destinationWorkspaceId?: string) => void;
+  workspaces: Workspace[];
 }
 
 function mergeVisibleIdsIntoAccountOrder(
@@ -48,17 +50,21 @@ function mergeVisibleIdsIntoAccountOrder(
 interface SortableAccountItemProps {
   account: TwoFactorAccount;
   availableTags: string[];
+  currentWorkspaceId: string;
   index: number;
   onRemove: (id: string) => void;
-  onUpdate: (account: TwoFactorAccount) => void;
+  onUpdate: (account: TwoFactorAccount, destinationWorkspaceId?: string) => void;
+  workspaces: Workspace[];
 }
 
 function SortableAccountItem({
   account,
   availableTags,
+  currentWorkspaceId,
   index,
   onRemove,
   onUpdate,
+  workspaces,
 }: SortableAccountItemProps) {
   const {
     attributes,
@@ -82,6 +88,7 @@ function SortableAccountItem({
       <AccountRow
         account={account}
         availableTags={availableTags}
+        currentWorkspaceId={currentWorkspaceId}
         dragHandleProps={{
           ...attributes,
           ...listeners,
@@ -91,6 +98,7 @@ function SortableAccountItem({
         isDraggable
         onRemove={onRemove}
         onUpdate={onUpdate}
+        workspaces={workspaces}
       />
     </div>
   );
@@ -100,9 +108,11 @@ export function AccountSortableList({
   accounts,
   visibleAccounts,
   availableTags,
+  currentWorkspaceId,
   onRemove,
   onReorder,
   onUpdate,
+  workspaces,
 }: AccountSortableListProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const visibleAccountIds = useMemo(
@@ -178,9 +188,11 @@ export function AccountSortableList({
               key={account.id}
               account={account}
               availableTags={availableTags}
+              currentWorkspaceId={currentWorkspaceId}
               index={visibleAccounts.indexOf(account)}
               onRemove={onRemove}
               onUpdate={onUpdate}
+              workspaces={workspaces}
             />
           ))}
         </div>
@@ -191,9 +203,11 @@ export function AccountSortableList({
             <AccountRow
               account={activeAccount}
               availableTags={availableTags}
+              currentWorkspaceId={currentWorkspaceId}
               isDragging
               onRemove={onRemove}
               onUpdate={onUpdate}
+              workspaces={workspaces}
             />
           </div>
         ) : null}

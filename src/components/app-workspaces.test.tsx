@@ -1,4 +1,5 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { toast } from "sonner";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -8,6 +9,8 @@ import type { AppData } from "@/lib/get2fa-data";
 
 const translations: Record<string, string> = {
   "app.title": "get2fa",
+  "filter.placeholder": "Filter by tag...",
+  "filter.clear": "Clear filter",
   "workspace.switcher": "Workspace",
   "workspace.create": "New workspace",
   "workspace.rename": "Rename workspace",
@@ -23,12 +26,24 @@ const translations: Record<string, string> = {
   "backup.export_selected": "Export selected workspaces",
   "backup.import": "Import Backup",
   "backup.export_success": "Backup downloaded successfully",
+  "account_row.edit": "Edit",
   "account_row.drag_handle": "Reorder {{label}}",
+  "edit_dialog.title": "Edit Account",
+  "edit_dialog.account_name": "Account Name",
+  "edit_dialog.secret_key": "Secret Key",
+  "edit_dialog.workspace": "Workspace",
+  "edit_dialog.description": "Update the account details and choose which workspace should contain it.",
+  "edit_dialog.move_success": "Moved {{label}} to {{workspace}}",
+  "edit_dialog.save_changes": "Save Changes",
 };
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
-    t: (key: string) => translations[key] ?? key,
+    t: (key: string, values?: Record<string, string>) =>
+      Object.entries(values ?? {}).reduce(
+        (text, [name, value]) => text.replaceAll(`{{${name}}}`, value),
+        translations[key] ?? key,
+      ),
     i18n: {
       language: "en",
       changeLanguage: vi.fn(),
@@ -122,7 +137,7 @@ describe("workspace app ui", () => {
   it("shows Default as the initial workspace", () => {
     render(<App />);
 
-    expect(screen.getByAltText("App Logo")).toHaveAttribute("src", "/icons/get2fa.svg");
+    expect(screen.getByAltText("App Logo")).toHaveAttribute("src", "/icon.svg?v=20260317-3");
     expect(screen.getByText("get2fa")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /default/i })).toBeInTheDocument();
   });
@@ -203,6 +218,7 @@ describe("workspace app ui", () => {
     const user = userEvent.setup();
     const capturedBlobs: Blob[] = [];
     const downloads: string[] = [];
+    const expectedFilename = `get2fa-backup-${new Date().toISOString().split("T")[0]}.json`;
 
     vi.mocked(URL.createObjectURL).mockImplementation((blob) => {
       capturedBlobs.push(blob as Blob);
@@ -239,7 +255,7 @@ describe("workspace app ui", () => {
     await user.click(screen.getByRole("menuitem", { name: /export current workspace/i }));
 
     expect(capturedBlobs).toHaveLength(1);
-    expect(downloads).toEqual(["get2fa-backup-2026-03-15.json"]);
+    expect(downloads).toEqual([expectedFilename]);
     const payload = JSON.parse(await capturedBlobs[0].text());
     expect(payload.workspaces).toHaveLength(1);
     expect(payload.workspaces[0].name).toBe("Default");
@@ -453,11 +469,130 @@ describe("workspace app ui", () => {
     });
   });
 
+  it("filters and clears tags without locking page scroll", async () => {
+    const user = userEvent.setup();
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "github",
+              secret: "AAAA",
+              issuer: "GitHub",
+              label: "GitHub",
+              tags: ["work"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+            {
+              id: "aws",
+              secret: "BBBB",
+              issuer: "AWS",
+              label: "AWS",
+              tags: ["cloud"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+            {
+              id: "vercel",
+              secret: "CCCC",
+              issuer: "Vercel",
+              label: "Vercel",
+              tags: ["project"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    const filterSelect = screen.getByRole("combobox", { name: /filter by tag/i });
+
+    await user.selectOptions(filterSelect, "work");
+
+    expect(filterSelect).toHaveValue("work");
+    expect(document.body.style.overflow).toBe("");
+
+    await user.click(screen.getByRole("button", { name: /clear filter/i }));
+
+    expect(filterSelect).toHaveValue("");
+    expect(document.body.style.overflow).toBe("");
+  });
+
+  it("does not lock page scroll after filtering from a quick tag badge", async () => {
+    const user = userEvent.setup();
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "github",
+              secret: "AAAA",
+              issuer: "GitHub",
+              label: "GitHub",
+              tags: ["work"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+            {
+              id: "aws",
+              secret: "BBBB",
+              issuer: "AWS",
+              label: "AWS",
+              tags: ["personal"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    const quickFilterBadge = screen
+      .getAllByText("work")
+      .find((element) => element.getAttribute("data-slot") === "badge");
+
+    expect(quickFilterBadge).toBeDefined();
+    expect(document.body.style.overflow).toBe("");
+
+    await user.click(quickFilterBadge!);
+
+    expect(document.body.style.overflow).toBe("");
+  });
+
   it("updates countdown state from a shared clock source", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-03-15T00:00:29.000Z"));
 
     const setIntervalSpy = vi.spyOn(window, "setInterval");
+    const workspaces = [
+      {
+        id: "default",
+        name: "Default",
+        createdAt: "2026-03-15T00:00:00.000Z",
+        updatedAt: "2026-03-15T00:00:00.000Z",
+        accounts: [],
+      },
+    ];
 
     render(
       <>
@@ -472,8 +607,10 @@ describe("workspace app ui", () => {
             updatedAt: "2026-03-15T00:00:00.000Z",
           }}
           availableTags={["work"]}
+          currentWorkspaceId="default"
           onRemove={vi.fn()}
           onUpdate={vi.fn()}
+          workspaces={workspaces}
         />
         <AccountRow
           account={{
@@ -486,8 +623,10 @@ describe("workspace app ui", () => {
             updatedAt: "2026-03-15T00:00:00.000Z",
           }}
           availableTags={["cloud"]}
+          currentWorkspaceId="default"
           onRemove={vi.fn()}
           onUpdate={vi.fn()}
+          workspaces={workspaces}
         />
       </>,
     );
@@ -500,5 +639,72 @@ describe("workspace app ui", () => {
     });
 
     expect(screen.getAllByText("30s")).toHaveLength(2);
+  });
+
+  it("moves an edited account into another workspace and shows a toast", async () => {
+    const user = userEvent.setup();
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "github",
+              secret: "AAAA",
+              issuer: "GitHub",
+              label: "GitHub",
+              tags: ["work"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+        {
+          id: "work",
+          name: "Work",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "aws",
+              secret: "BBBB",
+              issuer: "AWS",
+              label: "AWS",
+              tags: ["cloud"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /^edit$/i }));
+
+    const dialog = screen.getByRole("dialog");
+    const workspaceTrigger = within(dialog).getByRole("combobox", { name: /workspace/i });
+
+    await user.click(workspaceTrigger);
+    await user.click(screen.getByRole("option", { name: "Work" }));
+    await user.click(within(dialog).getByRole("button", { name: /save changes/i }));
+
+    await waitFor(() => {
+      expect(screen.queryByText("GitHub")).not.toBeInTheDocument();
+    });
+
+    expect(readStoredAppData().workspaces[0].accounts).toHaveLength(0);
+    expect(readStoredAppData().workspaces[1].accounts.map((account) => account.id)).toEqual([
+      "github",
+      "aws",
+    ]);
+    expect(vi.mocked(toast.success)).toHaveBeenCalledWith("Moved GitHub to Work");
   });
 });
