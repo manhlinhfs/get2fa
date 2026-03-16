@@ -142,6 +142,14 @@ describe("workspace app ui", () => {
     expect(screen.getByRole("button", { name: /default/i })).toBeInTheDocument();
   });
 
+  it("separates workspace switching into its own mobile header row", () => {
+    render(<App />);
+
+    expect(screen.getByTestId("app-header-brand")).toHaveClass("order-1");
+    expect(screen.getByTestId("app-header-actions")).toHaveClass("order-2", "ml-auto");
+    expect(screen.getByTestId("app-header-workspace")).toHaveClass("order-3", "w-full");
+  });
+
   it("switches visible accounts when the workspace changes", async () => {
     const user = userEvent.setup();
 

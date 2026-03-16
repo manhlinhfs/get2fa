@@ -41,10 +41,12 @@ export function WorkspaceSwitcher({
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="h-10 rounded-full border-border/50 bg-background/60 px-3 text-sm shadow-xs"
+          className="h-10 w-full justify-between rounded-full border-border/50 bg-background/60 px-3 text-sm shadow-xs md:w-auto md:justify-start"
         >
           <FolderKanban className="size-4 text-primary" />
-          <span className="max-w-32 truncate sm:max-w-44">{activeWorkspace.name}</span>
+          <span className="min-w-0 flex-1 truncate text-left md:max-w-44 md:flex-none">
+            {activeWorkspace.name}
+          </span>
           <ChevronDown className="size-4 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>

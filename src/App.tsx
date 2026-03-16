@@ -90,10 +90,13 @@ function TwoFactorApp() {
        <div className="fixed bottom-0 right-0 -z-10 h-[500px] w-[500px] bg-blue-500/10 rounded-full blur-[100px] opacity-50 pointer-events-none translate-x-[50%] translate-y-[50%]"></div>
 
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
-        <div className="container flex h-14 md:h-16 items-center justify-between mx-auto px-4 max-w-5xl gap-3">
-          <div className="flex min-w-0 items-center gap-2 md:gap-3">
+        <div className="container mx-auto flex max-w-5xl flex-wrap items-center gap-x-3 gap-y-3 px-4 py-3 md:h-16 md:flex-nowrap md:justify-between md:py-0">
+          <div
+            className="order-1 flex min-w-0 items-center gap-2 md:flex-1 md:gap-3"
+            data-testid="app-header-brand"
+          >
             <motion.div
-              className="flex items-center gap-2 md:gap-3 cursor-pointer group"
+              className="flex min-w-0 items-center gap-2 md:gap-3 cursor-pointer group"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -106,10 +109,32 @@ function TwoFactorApp() {
                    transition={{ repeat: Infinity, duration: 2 }}
                  />
               </div>
-              <span className="font-bold text-lg md:text-xl tracking-tight bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
+              <span className="truncate font-bold text-lg md:text-xl tracking-tight bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
                   {t('app.title')}
               </span>
             </motion.div>
+          </div>
+
+          <div
+            className="order-2 ml-auto flex items-center gap-1 md:order-3 md:ml-0 md:gap-2"
+            data-testid="app-header-actions"
+          >
+             <LanguageToggle />
+             <HelpDialog />
+             <DataBackup
+               activeWorkspaceId={activeWorkspace.id}
+               onExportCurrentWorkspace={() => exportSelectedWorkspaces([activeWorkspace.id])}
+               onExportSelectedWorkspaces={exportSelectedWorkspaces}
+               onImport={handleImport}
+               workspaces={workspaces}
+             />
+             <ModeToggle />
+          </div>
+
+          <div
+            className="order-3 w-full md:order-2 md:w-auto md:flex-shrink-0"
+            data-testid="app-header-workspace"
+          >
             <WorkspaceSwitcher
               activeWorkspaceId={activeWorkspace.id}
               onCreateWorkspace={() => {
@@ -124,19 +149,6 @@ function TwoFactorApp() {
               onSelectWorkspace={selectWorkspace}
               workspaces={workspaces}
             />
-          </div>
-          
-          <div className="flex items-center gap-1 md:gap-2">
-             <LanguageToggle />
-             <HelpDialog />
-             <DataBackup
-               activeWorkspaceId={activeWorkspace.id}
-               onExportCurrentWorkspace={() => exportSelectedWorkspaces([activeWorkspace.id])}
-               onExportSelectedWorkspaces={exportSelectedWorkspaces}
-               onImport={handleImport}
-               workspaces={workspaces}
-             />
-             <ModeToggle />
           </div>
         </div>
       </header>
