@@ -1,6 +1,5 @@
 # 🔐 get2fa - Secure Local TOTP Workspaces
 
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Status](https://img.shields.io/badge/Status-Production-success)
 ![Security](https://img.shields.io/badge/Security-Client--Side-violet)
 ![PWA](https://img.shields.io/badge/PWA-Supported-orange)
@@ -25,7 +24,7 @@
 
 ## 🛠️ Tech Stack
 
-*   **Framework**: React 18 + Vite
+*   **Framework**: React 19 + Vite
 *   **Language**: TypeScript
 *   **Runtime**: Bun
 *   **Styling**: TailwindCSS v4 + Shadcn UI
@@ -53,7 +52,7 @@ This guide assumes you have **Bun** and **PM2** installed.
 ### 1. Setup & Build
 ```bash
 # Clone repository
-git clone https://github.com/manhlinhfs/totp-client.git get2fa
+git clone https://github.com/manhlinhfs/get2fa.git
 cd get2fa
 
 # Install dependencies
@@ -78,7 +77,7 @@ pm2 startup
 ### 3. Update Application
 To update to the latest version:
 ```bash
-git pull origin master
+git pull --ff-only origin main
 bun run build
 pm2 restart get2fa
 ```
@@ -94,5 +93,5 @@ pm2 restart get2fa
 ---
 
 <p align="center">
-  Built with ❤️ for a safer web.
+  Built for local-first 2FA management.
 </p>

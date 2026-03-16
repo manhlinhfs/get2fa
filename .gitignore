@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local-only workflow artifacts
+docs/superpowers/
+test-results/
+public/icons/

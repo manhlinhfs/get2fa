@@ -1,6 +1,5 @@
 # 🔐 get2fa - Không Gian Làm Việc TOTP Bảo Mật Cục Bộ
 
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Status](https://img.shields.io/badge/Status-Production-success)
 ![Security](https://img.shields.io/badge/Security-Client--Side-violet)
 ![PWA](https://img.shields.io/badge/PWA-Supported-orange)
@@ -25,7 +24,7 @@
 
 ## 🛠️ Công Nghệ Sử Dụng
 
-*   **Framework**: React 18 + Vite
+*   **Framework**: React 19 + Vite
 *   **Language**: TypeScript
 *   **Runtime**: Bun
 *   **Styling**: TailwindCSS v4 + Shadcn UI
@@ -53,7 +52,7 @@ Hướng dẫn này giả định bạn đã cài **Bun** và **PM2**.
 ### 1. Cài đặt & Build
 ```bash
 # Clone repository
-git clone https://github.com/manhlinhfs/totp-client.git get2fa
+git clone https://github.com/manhlinhfs/get2fa.git
 cd get2fa
 
 # Cài đặt thư viện
@@ -78,7 +77,7 @@ pm2 startup
 ### 3. Cập nhật ứng dụng
 Để cập nhật phiên bản mới nhất:
 ```bash
-git pull origin master
+git pull --ff-only origin main
 bun run build
 pm2 restart get2fa
 ```
@@ -94,5 +93,5 @@ pm2 restart get2fa
 ---
 
 <p align="center">
-  Built with ❤️ for a safer web.
+  Xây dựng cho việc quản lý 2FA local-first.
 </p>
