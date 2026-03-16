@@ -4,7 +4,7 @@
 ![Security](https://img.shields.io/badge/Security-Client--Side-violet)
 ![PWA](https://img.shields.io/badge/PWA-Supported-orange)
 
-[🇺🇸 English](./README.md) | [🇻🇳 Tiếng Việt](./README.vi.md)
+[🇺🇸 English](./README.md) | [🇻🇳 Tiếng Việt](./README.vi.md) | [🇨🇳 中文](./README.zh.md) | [🇪🇸 Español](./README.es.md) | [🇯🇵 日本語](./README.ja.md) | [🇩🇪 Deutsch](./README.de.md) | [🇫🇷 Français](./README.fr.md)
 
 `get2fa` là ứng dụng TOTP ưu tiên quyền riêng tư, giúp bạn quản lý mã theo workspace riêng và lưu toàn bộ dữ liệu ngay trên thiết bị.
 

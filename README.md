@@ -4,7 +4,7 @@
 ![Security](https://img.shields.io/badge/Security-Client--Side-violet)
 ![PWA](https://img.shields.io/badge/PWA-Supported-orange)
 
-[🇺🇸 English](./README.md) | [🇻🇳 Tiếng Việt](./README.vi.md)
+[🇺🇸 English](./README.md) | [🇻🇳 Tiếng Việt](./README.vi.md) | [🇨🇳 中文](./README.zh.md) | [🇪🇸 Español](./README.es.md) | [🇯🇵 日本語](./README.ja.md) | [🇩🇪 Deutsch](./README.de.md) | [🇫🇷 Français](./README.fr.md)
 
 `get2fa` is a **privacy-first** TOTP workspace app that keeps your codes local, organized, and installable across desktop and mobile.
 
