@@ -27,6 +27,7 @@
     "paste_secret_expanded": "Geheimen Schlüssel einfügen",
     "paste_secret_collapsed": "Geheimen Schlüssel einfügen",
     "paste_clipboard": "Aus der Zwischenablage eingefügt",
+    "paste_autofill": "Eingefügt und Kontodaten automatisch ausgefüllt",
     "clipboard_error": "Zugriff auf Zwischenablage verweigert",
     "service_placeholder": "Kontoname oder Dienst",
     "add_tags_placeholder": "Tags hinzufügen...",

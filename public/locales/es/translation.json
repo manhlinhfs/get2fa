@@ -27,6 +27,7 @@
     "paste_secret_expanded": "Pegue una clave secreta",
     "paste_secret_collapsed": "Pegue una clave secreta",
     "paste_clipboard": "Pegado desde el portapapeles",
+    "paste_autofill": "Se pegó y se completó la información de la cuenta",
     "clipboard_error": "Acceso al portapapeles denegado",
     "service_placeholder": "Nombre de la cuenta o servicio",
     "add_tags_placeholder": "Añadir etiquetas...",

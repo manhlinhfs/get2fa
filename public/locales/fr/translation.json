@@ -27,6 +27,7 @@
     "paste_secret_expanded": "Collez une clé secrète",
     "paste_secret_collapsed": "Collez une clé secrète",
     "paste_clipboard": "Collé depuis le presse-papiers",
+    "paste_autofill": "Collé et informations du compte remplies automatiquement",
     "clipboard_error": "Accès au presse-papiers refusé",
     "service_placeholder": "Nom du compte ou du service",
     "add_tags_placeholder": "Ajouter des étiquettes...",

@@ -27,6 +27,7 @@
     "paste_secret_expanded": "粘贴密钥",
     "paste_secret_collapsed": "粘贴密钥",
     "paste_clipboard": "已从剪贴板粘贴",
+    "paste_autofill": "已粘贴并自动填写账户信息",
     "clipboard_error": "剪贴板访问被拒绝",
     "service_placeholder": "账户名称或服务名称",
     "add_tags_placeholder": "添加标签...",

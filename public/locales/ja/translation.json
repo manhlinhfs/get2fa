@@ -27,6 +27,7 @@
     "paste_secret_expanded": "シークレットキーを貼り付け",
     "paste_secret_collapsed": "シークレットキーを貼り付け",
     "paste_clipboard": "クリップボードから貼り付けました",
+    "paste_autofill": "貼り付けてアカウント情報を自動入力しました",
     "clipboard_error": "クリップボードへのアクセスが拒否されました",
     "service_placeholder": "アカウント名またはサービス名",
     "add_tags_placeholder": "タグを追加...",

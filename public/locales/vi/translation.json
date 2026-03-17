@@ -27,6 +27,7 @@
     "paste_secret_expanded": "Dán khóa bí mật",
     "paste_secret_collapsed": "Dán khóa bí mật",
     "paste_clipboard": "Đã dán từ bộ nhớ tạm",
+    "paste_autofill": "Đã dán và tự điền thông tin tài khoản",
     "clipboard_error": "Truy cập bộ nhớ tạm bị từ chối",
     "service_placeholder": "Tên tài khoản hoặc dịch vụ",
     "add_tags_placeholder": "Thêm thẻ...",

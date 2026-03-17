@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useOnClickOutside } from "usehooks-ts";
 import { useTranslation } from "react-i18next";
+import { parsePastedAccountData } from "@/lib/pasted-account-parser";
 
 interface AddAccountFormProps {
   onAdd: (account: AccountInput) => void;
@@ -32,7 +33,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
     }
   });
 
-  const handlePaste = async (setter: (val: string) => void, checkDuplicatesWith?: string) => {
+  const handleGenericPaste = async (setter: (val: string) => void, checkDuplicatesWith?: string) => {
     try {
       const text = await navigator.clipboard.readText();
       if (text) {
@@ -45,6 +46,48 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
     } catch {
       toast.error(t('add_form.clipboard_error'));
     }
+  };
+
+  const applySecretPaste = (text: string) => {
+    const parsed = parsePastedAccountData(text);
+
+    if (parsed.kind === "account-and-secret") {
+      setIsExpanded(true);
+      setSecret(parsed.secret);
+      setLabel((currentLabel) => (currentLabel.trim() ? currentLabel : parsed.label));
+      toast.success(t("add_form.paste_autofill"));
+      return;
+    }
+
+    if (parsed.kind === "secret-only") {
+      setSecret(parsed.secret);
+      toast.success(t("add_form.paste_clipboard"));
+      return;
+    }
+
+    setSecret(text);
+    toast.success(t("add_form.paste_clipboard"));
+  };
+
+  const handleSecretClipboardPaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        applySecretPaste(text);
+      }
+    } catch {
+      toast.error(t('add_form.clipboard_error'));
+    }
+  };
+
+  const handleSecretPaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    const text = event.clipboardData.getData("text");
+    if (!text) {
+      return;
+    }
+
+    event.preventDefault();
+    applySecretPaste(text);
   };
 
   const handleAddTag = () => {
@@ -112,8 +155,9 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                         placeholder={isExpanded ? t('add_form.paste_secret_expanded') : t('add_form.paste_secret_collapsed')}
                         value={secret}
                         onChange={(e) => setSecret(e.target.value)}
+                        onPaste={handleSecretPaste}
                         onFocus={() => setIsExpanded(true)}
-                        onClick={() => !secret && handlePaste(setSecret)}
+                        onClick={() => !secret && handleSecretClipboardPaste()}
                         required
                         className={cn(
                             "h-14 font-mono uppercase bg-background/50 border-transparent focus:border-transparent transition-all text-base pl-12 pr-10 rounded-2xl shadow-none",
@@ -138,7 +182,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                              <Button
                                 type="button" variant="ghost" size="icon" 
                                 className="h-9 w-9 text-muted-foreground hover:text-foreground rounded-xl"
-                                onClick={() => handlePaste(setSecret)}
+                                onClick={handleSecretClipboardPaste}
                                 title="Paste"
                             >
                                 <ClipboardPaste className="h-5 w-5" />
@@ -167,7 +211,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                                     placeholder={t('add_form.service_placeholder')}
                                     value={label}
                                     onChange={(e) => setLabel(e.target.value)}
-                                    onClick={() => !label && handlePaste(setLabel, secret)}
+                                    onClick={() => !label && handleGenericPaste(setLabel, secret)}
                                     className="h-12 bg-background/40 border-border/50 focus:border-primary/50 focus:bg-background/60 transition-all text-base pl-12 pr-10 rounded-2xl"
                                     />
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
@@ -176,7 +220,7 @@ export function AddAccountForm({ onAdd, availableTags }: AddAccountFormProps) {
                                     <Button
                                         type="button" variant="ghost" size="icon" 
                                         className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground h-8 w-8"
-                                        onClick={() => handlePaste(setLabel, secret)}
+                                        onClick={() => handleGenericPaste(setLabel, secret)}
                                     >
                                         <ClipboardPaste className="h-4 w-4" />
                                     </Button>

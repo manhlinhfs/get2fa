@@ -27,6 +27,7 @@
     "paste_secret_expanded": "Paste a secret key",
     "paste_secret_collapsed": "Paste a secret key",
     "paste_clipboard": "Pasted from clipboard",
+    "paste_autofill": "Pasted and filled account details",
     "clipboard_error": "Clipboard access denied",
     "service_placeholder": "Account or service name",
     "add_tags_placeholder": "Add tags...",
