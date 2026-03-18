@@ -2,14 +2,17 @@
   "app": {
     "title": "get2fa",
     "ready": "Todavía no hay cuentas.",
-    "enter_key": "Pegue una clave secreta arriba para añadir su primera cuenta."
+    "enter_key": "Pegue una clave secreta arriba para añadir su primera cuenta.",
+    "search_placeholder": "Buscar cuentas"
   },
   "filter": {
     "placeholder": "Filtrar por etiqueta...",
     "no_tags": "No se encontraron etiquetas.",
     "popular": "Popular:",
     "no_match": "Ninguna cuenta coincide con la etiqueta:",
-    "clear": "Borrar filtro"
+    "clear": "Borrar filtro",
+    "delete_tag": "Eliminar etiqueta {{tag}}",
+    "delete_tag_confirm": "¿Eliminar la etiqueta {{tag}} de este workspace?"
   },
   "common": {
     "language": "Idioma",
@@ -51,7 +54,8 @@
     "workspace": "Workspace",
     "description": "Actualiza los datos de la cuenta y elige el workspace que debe contenerla.",
     "move_success": "{{label}} se movió a {{workspace}}",
-    "save_changes": "Guardar cambios"
+    "save_changes": "Guardar cambios",
+    "remove_tag": "Quitar etiqueta {{tag}}"
   },
   "help_dialog": {
     "title": "Aviso de seguridad importante",

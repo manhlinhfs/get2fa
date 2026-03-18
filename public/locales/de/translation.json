@@ -2,14 +2,17 @@
   "app": {
     "title": "get2fa",
     "ready": "Noch keine Konten.",
-    "enter_key": "Fügen Sie oben einen geheimen Schlüssel ein, um Ihr erstes Konto hinzuzufügen."
+    "enter_key": "Fügen Sie oben einen geheimen Schlüssel ein, um Ihr erstes Konto hinzuzufügen.",
+    "search_placeholder": "Konten suchen"
   },
   "filter": {
     "placeholder": "Nach Tag filtern...",
     "no_tags": "Keine Tags gefunden.",
     "popular": "Beliebt:",
     "no_match": "Keine Konten entsprechen dem Tag:",
-    "clear": "Filter löschen"
+    "clear": "Filter löschen",
+    "delete_tag": "Tag {{tag}} löschen",
+    "delete_tag_confirm": "Tag {{tag}} aus diesem Workspace löschen?"
   },
   "common": {
     "language": "Sprache",
@@ -51,7 +54,8 @@
     "workspace": "Workspace",
     "description": "Aktualisieren Sie die Kontodaten und wählen Sie den Workspace, der dieses Konto enthalten soll.",
     "move_success": "{{label}} wurde nach {{workspace}} verschoben",
-    "save_changes": "Änderungen speichern"
+    "save_changes": "Änderungen speichern",
+    "remove_tag": "Tag {{tag}} entfernen"
   },
   "help_dialog": {
     "title": "Wichtiger Sicherheitshinweis",

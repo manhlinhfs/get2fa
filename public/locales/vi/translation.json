@@ -2,14 +2,17 @@
   "app": {
     "title": "get2fa",
     "ready": "Chưa có tài khoản nào.",
-    "enter_key": "Dán khóa bí mật ở trên để thêm tài khoản đầu tiên."
+    "enter_key": "Dán khóa bí mật ở trên để thêm tài khoản đầu tiên.",
+    "search_placeholder": "Tìm tài khoản"
   },
   "filter": {
     "placeholder": "Lọc theo thẻ...",
     "no_tags": "Không tìm thấy thẻ.",
     "popular": "Phổ biến:",
     "no_match": "Không có tài khoản nào khớp với thẻ:",
-    "clear": "Xóa bộ lọc"
+    "clear": "Xóa bộ lọc",
+    "delete_tag": "Xóa thẻ {{tag}}",
+    "delete_tag_confirm": "Xóa thẻ {{tag}} khỏi workspace này?"
   },
   "common": {
     "language": "Ngôn ngữ",
@@ -51,7 +54,8 @@
     "workspace": "Workspace",
     "description": "Cập nhật thông tin tài khoản và chọn workspace sẽ chứa tài khoản này.",
     "move_success": "Đã chuyển {{label}} sang {{workspace}}",
-    "save_changes": "Lưu thay đổi"
+    "save_changes": "Lưu thay đổi",
+    "remove_tag": "Gỡ thẻ {{tag}}"
   },
   "help_dialog": {
     "title": "Thông báo bảo mật quan trọng",

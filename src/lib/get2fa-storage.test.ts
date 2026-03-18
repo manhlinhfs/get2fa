@@ -4,6 +4,7 @@ import {
   addAccount,
   createWorkspace,
   deleteWorkspace,
+  deleteWorkspaceTag,
   moveAccountToWorkspace,
   renameWorkspace,
   reorderWorkspaceAccounts,
@@ -155,6 +156,30 @@ describe("workspace reducers", () => {
     expect(result.workspaces[0].accounts).toHaveLength(0);
     expect(result.workspaces[1].accounts.map((account) => account.id)).toEqual(["github", "aws"]);
     expect(result.workspaces[1].accounts[0].label).toBe("GitHub Prod");
+  });
+
+  it("deletes a workspace tag from all accounts in that workspace", () => {
+    const initial = migrateLegacyAccounts([
+      {
+        id: "a1",
+        secret: "AAAA",
+        issuer: "GitHub",
+        label: "GitHub",
+        tags: ["work", "shared"],
+      },
+      {
+        id: "a2",
+        secret: "BBBB",
+        issuer: "AWS",
+        label: "AWS",
+        tags: ["shared", "cloud"],
+      },
+    ]);
+
+    const result = deleteWorkspaceTag(initial, initial.currentWorkspaceId, "shared");
+
+    expect(result.workspaces[0].accounts[0].tags).toEqual(["work"]);
+    expect(result.workspaces[0].accounts[1].tags).toEqual(["cloud"]);
   });
 });
 

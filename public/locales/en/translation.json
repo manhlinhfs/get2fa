@@ -2,14 +2,17 @@
   "app": {
     "title": "get2fa",
     "ready": "No accounts yet.",
-    "enter_key": "Paste a secret key above to add your first account."
+    "enter_key": "Paste a secret key above to add your first account.",
+    "search_placeholder": "Search accounts"
   },
   "filter": {
     "placeholder": "Filter by tag...",
     "no_tags": "No tags found.",
     "popular": "Popular:",
     "no_match": "No accounts match tag:",
-    "clear": "Clear filter"
+    "clear": "Clear filter",
+    "delete_tag": "Delete tag {{tag}}",
+    "delete_tag_confirm": "Delete tag {{tag}} from this workspace?"
   },
   "common": {
     "language": "Language",
@@ -51,7 +54,8 @@
     "workspace": "Workspace",
     "description": "Update the account details and choose which workspace should contain it.",
     "move_success": "Moved {{label}} to {{workspace}}",
-    "save_changes": "Save Changes"
+    "save_changes": "Save Changes",
+    "remove_tag": "Remove tag {{tag}}"
   },
   "help_dialog": {
     "title": "Important Security Notice",

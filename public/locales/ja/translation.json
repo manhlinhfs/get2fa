@@ -2,14 +2,17 @@
   "app": {
     "title": "get2fa",
     "ready": "まだアカウントはありません。",
-    "enter_key": "上にシークレットキーを貼り付けて最初のアカウントを追加してください。"
+    "enter_key": "上にシークレットキーを貼り付けて最初のアカウントを追加してください。",
+    "search_placeholder": "アカウントを検索"
   },
   "filter": {
     "placeholder": "タグでフィルタリング...",
     "no_tags": "タグが見つかりません。",
     "popular": "人気:",
     "no_match": "タグに一致するアカウントはありません:",
-    "clear": "フィルタをクリア"
+    "clear": "フィルタをクリア",
+    "delete_tag": "タグ {{tag}} を削除",
+    "delete_tag_confirm": "このワークスペースからタグ {{tag}} を削除しますか？"
   },
   "common": {
     "language": "言語",
@@ -51,7 +54,8 @@
     "workspace": "ワークスペース",
     "description": "アカウント情報を更新し、このアカウントを含めるワークスペースを選択します。",
     "move_success": "{{label}} を {{workspace}} に移動しました",
-    "save_changes": "変更を保存"
+    "save_changes": "変更を保存",
+    "remove_tag": "タグ {{tag}} を外す"
   },
   "help_dialog": {
     "title": "重要なセキュリティ通知",

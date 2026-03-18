@@ -116,7 +116,7 @@ export function AccountRow({
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
             className={cn(
-                "group relative flex flex-col md:flex-row md:items-center justify-between p-4 md:p-5 rounded-2xl border transition-all duration-200 gap-4 md:gap-0",
+                "group relative flex flex-col justify-between gap-3 rounded-xl border p-3 transition-all duration-200 md:flex-row md:items-center md:gap-0 md:p-4",
                 "bg-white/70 dark:bg-card/40 backdrop-blur-md border-white/20 dark:border-white/5",
                 "shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-5px_rgba(0,0,0,0.1)]",
                 "dark:hover:bg-card/60 dark:hover:border-primary/20",
@@ -128,12 +128,12 @@ export function AccountRow({
             {isDraggable && (
                 <button
                     aria-label={dragHandleLabel}
-                    className="absolute left-1 top-4 md:top-1/2 md:-translate-y-1/2 p-3 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-primary hover:bg-primary/5 rounded-xl z-20 touch-none transition-colors"
+                    className="absolute left-1 top-3 z-20 rounded-lg p-2.5 text-muted-foreground/40 transition-colors touch-none hover:bg-primary/5 hover:text-primary cursor-grab active:cursor-grabbing md:top-1/2 md:-translate-y-1/2"
                     ref={dragHandleRef}
                     type="button"
                     {...dragHandleProps}
                 >
-                    <GripVertical className="h-6 w-6" />
+                    <GripVertical className="h-5 w-5" />
                 </button>
             )}
 
@@ -142,7 +142,7 @@ export function AccountRow({
                 <motion.div 
                     whileHover={{ rotate: 5, scale: 1.1 }}
                     className={cn(
-                        "h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold uppercase shrink-0 shadow-lg transition-all duration-500",
+                        "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-base font-bold uppercase shadow-lg transition-all duration-500 md:h-10 md:w-10 md:rounded-xl md:text-lg",
                         isExpiring 
                             ? "bg-gradient-to-br from-red-500 to-rose-600 text-white shadow-red-500/20" 
                             : "bg-gradient-to-br from-primary to-blue-600 text-white shadow-primary/20"
@@ -152,10 +152,10 @@ export function AccountRow({
                 </motion.div>
 
                 <div className="flex flex-col min-w-0 pr-2">
-                    <h3 className="font-bold text-base md:text-lg truncate leading-tight tracking-tight text-foreground/90">{account.label}</h3>
+                    <h3 className="truncate text-sm font-bold leading-tight tracking-tight text-foreground/90 md:text-base">{account.label}</h3>
                     <div className="flex flex-wrap gap-1 mt-1">
                         {account.tags && account.tags.map(tag => (
-                            <span key={tag} className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] md:text-[10px] font-medium bg-secondary/50 text-secondary-foreground border border-border/50">
+                            <span key={tag} className="inline-flex items-center rounded-md border border-border/50 bg-secondary/50 px-1.5 py-0.5 text-[8px] font-medium text-secondary-foreground md:text-[9px]">
                                 {tag}
                             </span>
                         ))}
@@ -164,7 +164,7 @@ export function AccountRow({
             </div>
 
             {/* Right Side: Token & Actions */}
-            <div className="flex items-center justify-between md:justify-end w-full md:w-auto gap-4 md:gap-8 pl-2 md:pl-0">
+            <div className="flex w-full items-center justify-between gap-3 pl-1 md:w-auto md:justify-end md:gap-6 md:pl-0">
                 {/* Token Display */}
                 <button
                     aria-label={copyActionLabel}
@@ -174,7 +174,7 @@ export function AccountRow({
                     type="button"
                 >
                     <div className={cn(
-                        "font-mono text-2xl sm:text-3xl md:text-4xl font-bold tracking-[0.15em] transition-all duration-300 select-none",
+                        "select-none font-mono text-xl font-bold tracking-[0.12em] transition-all duration-300 sm:text-2xl md:text-3xl",
                         isExpiring ? "text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" : "text-foreground group-hover/token:text-primary"
                     )}>
                         {displayToken}
@@ -182,7 +182,7 @@ export function AccountRow({
                 </button>
                  
                  {/* Circular Timer */}
-                 <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center shrink-0">
+                 <div className="relative flex h-9 w-9 shrink-0 items-center justify-center md:h-10 md:w-10">
                     <svg className="w-full h-full -rotate-90 scale-x-[-1]" viewBox="0 0 36 36">
                         <circle
                           className="text-muted/10"
@@ -206,7 +206,7 @@ export function AccountRow({
                         />
                     </svg>
                     <span className={cn(
-                        "absolute text-[10px] md:text-xs font-bold tabular-nums transition-colors", 
+                        "absolute text-[9px] font-bold tabular-nums transition-colors md:text-[10px]",
                         isExpiring ? "text-red-500" : "text-muted-foreground"
                     )}>
                     {Math.round(remaining)}s
@@ -214,24 +214,24 @@ export function AccountRow({
                  </div>
 
                 {/* Quick Actions */}
-                <div className="flex md:flex-col gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-background/50 md:bg-transparent rounded-lg p-1 md:p-0 backdrop-blur-sm md:backdrop-blur-none border md:border-none border-border/50 absolute md:static top-4 right-4 md:auto z-20">
+                <div className="absolute top-3 right-3 z-20 flex gap-1 rounded-lg border border-border/50 bg-background/50 p-1 opacity-100 transition-opacity duration-200 backdrop-blur-sm md:static md:auto md:flex-col md:border-none md:bg-transparent md:p-0 md:opacity-0 md:backdrop-blur-none group-hover:opacity-100">
                     <Button 
                         aria-label={editActionLabel}
                         variant="ghost" size="icon" 
                         onClick={(e) => { e.stopPropagation(); setIsEditing(true); }} 
-                        className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full"
+                        className="h-7 w-7 rounded-full text-muted-foreground hover:bg-primary/10 hover:text-primary"
                         title={editActionLabel}
                     >
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="h-3.5 w-3.5" />
                     </Button>
                     <Button 
                         aria-label={deleteActionLabel}
                         variant="ghost" size="icon" 
                         onClick={(e) => { e.stopPropagation(); setIsDeleting(true); }} 
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
+                        className="h-7 w-7 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                         title={deleteActionLabel}
                     >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                 </div>
             </div>

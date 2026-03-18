@@ -2,14 +2,17 @@
   "app": {
     "title": "get2fa",
     "ready": "Aucun compte pour le moment.",
-    "enter_key": "Collez une clé secrète ci-dessus pour ajouter votre premier compte."
+    "enter_key": "Collez une clé secrète ci-dessus pour ajouter votre premier compte.",
+    "search_placeholder": "Rechercher des comptes"
   },
   "filter": {
     "placeholder": "Filtrer par étiquette...",
     "no_tags": "Aucune étiquette trouvée.",
     "popular": "Populaire:",
     "no_match": "Aucun compte ne correspond à l'étiquette:",
-    "clear": "Effacer le filtre"
+    "clear": "Effacer le filtre",
+    "delete_tag": "Supprimer l’étiquette {{tag}}",
+    "delete_tag_confirm": "Supprimer l’étiquette {{tag}} de cet espace de travail ?"
   },
   "common": {
     "language": "Langue",
@@ -51,7 +54,8 @@
     "workspace": "Workspace",
     "description": "Mettez à jour les détails du compte et choisissez l’espace de travail qui doit le contenir.",
     "move_success": "{{label}} a été déplacé vers {{workspace}}",
-    "save_changes": "Enregistrer les modifications"
+    "save_changes": "Enregistrer les modifications",
+    "remove_tag": "Retirer l’étiquette {{tag}}"
   },
   "help_dialog": {
     "title": "Avis de sécurité important",

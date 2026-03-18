@@ -2,14 +2,17 @@
   "app": {
     "title": "get2fa",
     "ready": "还没有账户。",
-    "enter_key": "在上方粘贴密钥以添加第一个账户。"
+    "enter_key": "在上方粘贴密钥以添加第一个账户。",
+    "search_placeholder": "搜索账户"
   },
   "filter": {
     "placeholder": "按标签筛选...",
     "no_tags": "未找到标签。",
     "popular": "流行:",
     "no_match": "没有帐户匹配标签:",
-    "clear": "清除筛选"
+    "clear": "清除筛选",
+    "delete_tag": "删除标签 {{tag}}",
+    "delete_tag_confirm": "从此工作区删除标签 {{tag}}？"
   },
   "common": {
     "language": "语言",
@@ -51,7 +54,8 @@
     "workspace": "工作区",
     "description": "更新帐户信息并选择要包含该帐户的工作区。",
     "move_success": "已将 {{label}} 移动到 {{workspace}}",
-    "save_changes": "保存更改"
+    "save_changes": "保存更改",
+    "remove_tag": "移除标签 {{tag}}"
   },
   "help_dialog": {
     "title": "重要安全须知",

@@ -9,8 +9,11 @@ import type { AppData } from "@/lib/get2fa-data";
 
 const translations: Record<string, string> = {
   "app.title": "get2fa",
+  "app.search_placeholder": "Search accounts",
   "filter.placeholder": "Filter by tag...",
   "filter.clear": "Clear filter",
+  "filter.delete_tag": "Delete tag {{tag}}",
+  "filter.delete_tag_confirm": "Delete tag {{tag}} from this workspace?",
   "workspace.switcher": "Workspace",
   "workspace.create": "New workspace",
   "workspace.rename": "Rename workspace",
@@ -35,6 +38,7 @@ const translations: Record<string, string> = {
   "edit_dialog.description": "Update the account details and choose which workspace should contain it.",
   "edit_dialog.move_success": "Moved {{label}} to {{workspace}}",
   "edit_dialog.save_changes": "Save Changes",
+  "edit_dialog.remove_tag": "Remove tag {{tag}}",
 };
 
 vi.mock("react-i18next", () => ({
@@ -457,12 +461,7 @@ describe("workspace app ui", () => {
 
     render(<App />);
 
-    const workFilterBadge = screen
-      .getAllByText("work")
-      .find((element) => element.getAttribute("data-slot") === "badge");
-    expect(workFilterBadge).toBeDefined();
-
-    await user.click(workFilterBadge!);
+    await user.click(screen.getByRole("button", { name: "work" }));
 
     const dragHandle = screen.getByRole("button", { name: /reorder vercel/i });
     dragHandle.focus();
@@ -575,14 +574,9 @@ describe("workspace app ui", () => {
 
     render(<App />);
 
-    const quickFilterBadge = screen
-      .getAllByText("work")
-      .find((element) => element.getAttribute("data-slot") === "badge");
-
-    expect(quickFilterBadge).toBeDefined();
     expect(document.body.style.overflow).toBe("");
 
-    await user.click(quickFilterBadge!);
+    await user.click(screen.getByRole("button", { name: "work" }));
 
     expect(document.body.style.overflow).toBe("");
   });
@@ -714,5 +708,147 @@ describe("workspace app ui", () => {
       "aws",
     ]);
     expect(vi.mocked(toast.success)).toHaveBeenCalledWith("Moved GitHub to Work");
+  });
+
+  it("removes an attached tag from the edit dialog and persists the change", async () => {
+    const user = userEvent.setup();
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "github",
+              secret: "AAAA",
+              issuer: "GitHub",
+              label: "GitHub",
+              tags: ["work", "shared"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /^edit$/i }));
+
+    const dialog = screen.getByRole("dialog");
+    await user.click(within(dialog).getByRole("button", { name: /remove tag shared/i }));
+    await user.click(within(dialog).getByRole("button", { name: /save changes/i }));
+
+    expect(readStoredAppData().workspaces[0].accounts[0].tags).toEqual(["work"]);
+    expect(screen.queryByText("shared")).not.toBeInTheDocument();
+  });
+
+  it("deletes a workspace tag from all accounts after confirmation", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "github",
+              secret: "AAAA",
+              issuer: "GitHub",
+              label: "GitHub",
+              tags: ["work", "shared"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+            {
+              id: "aws",
+              secret: "BBBB",
+              issuer: "AWS",
+              label: "AWS",
+              tags: ["shared", "cloud"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /delete tag shared/i }));
+
+    expect(window.confirm).toHaveBeenCalledWith("Delete tag shared from this workspace?");
+    expect(readStoredAppData().workspaces[0].accounts[0].tags).toEqual(["work"]);
+    expect(readStoredAppData().workspaces[0].accounts[1].tags).toEqual(["cloud"]);
+    expect(screen.queryByText("shared")).not.toBeInTheDocument();
+  });
+
+  it("focuses the account search when Ctrl+F is pressed and filters by account name", async () => {
+    const user = userEvent.setup();
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "github",
+              secret: "AAAA",
+              issuer: "GitHub",
+              label: "GitHub",
+              tags: ["work"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+            {
+              id: "aws",
+              secret: "BBBB",
+              issuer: "AWS",
+              label: "AWS Prod",
+              tags: ["cloud"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    window.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "f",
+        ctrlKey: true,
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+
+    const searchInput = screen.getByRole("searchbox", { name: /search accounts/i });
+    expect(searchInput).toHaveFocus();
+
+    await user.type(searchInput, "aws");
+
+    expect(screen.getByText("AWS Prod")).toBeInTheDocument();
+    expect(screen.queryByText("GitHub")).not.toBeInTheDocument();
   });
 });

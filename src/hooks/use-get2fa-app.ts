@@ -4,6 +4,7 @@ import {
   addAccount as addWorkspaceAccount,
   createWorkspace as createWorkspaceData,
   deleteWorkspace as deleteWorkspaceData,
+  deleteWorkspaceTag as deleteWorkspaceTagData,
   moveAccountToWorkspace,
   removeAccount as removeWorkspaceAccount,
   renameWorkspace as renameWorkspaceData,
@@ -28,6 +29,7 @@ function getActiveWorkspace(appData: AppData) {
 export function useGet2FAApp() {
   const [appData, setAppData] = useState<AppData>(() => initializeAppData());
   const [filterTag, setFilterTag] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const activeWorkspace = getActiveWorkspace(appData);
   const accounts = activeWorkspace.accounts;
@@ -57,8 +59,11 @@ export function useGet2FAApp() {
     availableTags,
     topTags,
     filterTag,
+    searchQuery,
     setFilterTag,
+    setSearchQuery,
     createWorkspace(name: string) {
+      setSearchQuery("");
       persist(createWorkspaceData(appData, name));
     },
     renameWorkspace(workspaceId: string, nextName: string) {
@@ -66,10 +71,12 @@ export function useGet2FAApp() {
     },
     deleteWorkspace(workspaceId: string) {
       setFilterTag(null);
+      setSearchQuery("");
       persist(deleteWorkspaceData(appData, workspaceId));
     },
     selectWorkspace(workspaceId: string) {
       setFilterTag(null);
+      setSearchQuery("");
       persist({
         ...appData,
         currentWorkspaceId: workspaceId,
@@ -88,6 +95,12 @@ export function useGet2FAApp() {
     },
     removeAccount(accountId: string) {
       persist(removeWorkspaceAccount(appData, activeWorkspace.id, accountId));
+    },
+    deleteWorkspaceTag(tag: string) {
+      if (filterTag === tag) {
+        setFilterTag(null);
+      }
+      persist(deleteWorkspaceTagData(appData, activeWorkspace.id, tag));
     },
     reorderAccounts(orderedIds: string[]) {
       persist(reorderWorkspaceAccounts(appData, activeWorkspace.id, orderedIds));

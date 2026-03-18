@@ -145,7 +145,14 @@ export function EditAccountDialog({
                 {tags.map(tag => (
                     <Badge key={tag} variant="secondary" className="gap-1 pr-1">
                         {tag}
-                        <X className="h-3 w-3 cursor-pointer hover:text-destructive" onClick={() => toggleTag(tag)} />
+                        <button
+                          aria-label={t("edit_dialog.remove_tag", { tag })}
+                          className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full hover:bg-background/60 hover:text-destructive"
+                          onClick={() => toggleTag(tag)}
+                          type="button"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
                     </Badge>
                 ))}
                 <input 

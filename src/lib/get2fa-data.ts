@@ -170,6 +170,20 @@ export function removeAccount(appData: AppData, workspaceId: string, accountId: 
   }));
 }
 
+export function deleteWorkspaceTag(appData: AppData, workspaceId: string, tag: string): AppData {
+  const updatedAt = nowIso();
+
+  return updateWorkspace(appData, workspaceId, (workspace) => ({
+    ...workspace,
+    updatedAt,
+    accounts: workspace.accounts.map((account) => ({
+      ...account,
+      tags: account.tags.filter((currentTag) => currentTag !== tag),
+      updatedAt,
+    })),
+  }));
+}
+
 export function reorderWorkspaceAccounts(appData: AppData, workspaceId: string, orderedIds: string[]): AppData {
   return updateWorkspace(appData, workspaceId, (workspace) => {
     const accountMap = new Map(workspace.accounts.map((account) => [account.id, account]));

@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DataBackup } from "@/components/data-backup";
 import { HelpDialog } from "@/components/help-dialog";
 import { useGet2FAApp } from "@/hooks/use-get2fa-app";
-import { FilterX, Sparkles } from "lucide-react";
+import { FilterX, Search, Sparkles, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -12,7 +12,6 @@ import { AccountSortableList } from "@/components/account-sortable-list";
 import { WorkspaceSwitcher } from "@/components/workspace-switcher";
 import { WorkspaceDialog } from "@/components/workspace-dialog";
 import { Toaster } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { parseImportedBackup } from "@/lib/get2fa-backup";
@@ -35,13 +34,17 @@ function TwoFactorApp() {
     removeAccount,
     renameWorkspace,
     reorderAccounts,
+    searchQuery,
     selectWorkspace,
+    setSearchQuery,
     setFilterTag,
     createWorkspace,
+    deleteWorkspaceTag,
     updateAccount,
   } = useGet2FAApp();
   const [workspaceDialogMode, setWorkspaceDialogMode] = useState<"create" | "rename">("create");
   const [workspaceDialogOpen, setWorkspaceDialogOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const applyTagFilter = (nextTag: string | null) => {
     setFilterTag(nextTag);
@@ -53,9 +56,48 @@ function TwoFactorApp() {
     }, 0);
   };
 
-  const filteredAccounts = filterTag
-    ? accounts.filter(a => a.tags?.includes(filterTag))
-    : accounts;
+  const filteredAccounts = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    return accounts.filter((account) => {
+      const matchesTag = filterTag ? account.tags?.includes(filterTag) : true;
+      const matchesSearch = normalizedQuery
+        ? account.label.toLowerCase().includes(normalizedQuery)
+        : true;
+
+      return matchesTag && matchesSearch;
+    });
+  }, [accounts, filterTag, searchQuery]);
+  const orderedTags = useMemo(
+    () => [...topTags, ...availableTags.filter((tag) => !topTags.includes(tag))],
+    [availableTags, topTags],
+  );
+
+  useEffect(() => {
+    const handleSearchShortcut = (event: KeyboardEvent) => {
+      const isShortcut = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "f";
+      if (!isShortcut) {
+        return;
+      }
+
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      searchInputRef.current?.focus();
+      searchInputRef.current?.select();
+    };
+
+    window.addEventListener("keydown", handleSearchShortcut);
+    return () => window.removeEventListener("keydown", handleSearchShortcut);
+  }, []);
 
   const handleImport = (payload: unknown) => {
     const parsedBackup = parseImportedBackup(payload);
@@ -160,59 +202,110 @@ function TwoFactorApp() {
         </section>
 
         {/* Filter Section */}
-        {availableTags.length > 0 && (
+        {(accounts.length > 0 || availableTags.length > 0) && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-3 py-2 flex-wrap"
+            className="flex flex-col gap-3 py-2"
+            initial={{ opacity: 0, y: 10 }}
           >
-            <div className="flex w-full sm:w-auto items-center gap-2">
-              <label className="sr-only" htmlFor="tag-filter">
-                {t("filter.placeholder")}
-              </label>
-              <select
-                aria-label={t("filter.placeholder")}
-                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-[250px]"
-                id="tag-filter"
-                onChange={(event) => applyTagFilter(event.target.value || null)}
-                value={filterTag ?? ""}
-              >
-                <option value="">{t("filter.placeholder")}</option>
-                {availableTags.map((tag) => (
-                  <option key={tag} value={tag}>
-                    {tag}
-                  </option>
-                ))}
-              </select>
-              {filterTag && (
-                <button
-                  className="shrink-0 rounded-md border border-border px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  onClick={() => applyTagFilter(null)}
-                  type="button"
-                >
-                  {t("filter.clear")}
-                </button>
+            <div className="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+              {accounts.length > 0 && (
+                <div className="relative w-full sm:w-[280px]">
+                  <label className="sr-only" htmlFor="account-search">
+                    {t("app.search_placeholder")}
+                  </label>
+                  <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    aria-label={t("app.search_placeholder")}
+                    className="h-10 w-full rounded-md border border-input bg-background pl-9 pr-10 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    id="account-search"
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder={t("app.search_placeholder")}
+                    ref={searchInputRef}
+                    role="searchbox"
+                    type="search"
+                    value={searchQuery}
+                  />
+                  {searchQuery && (
+                    <button
+                      aria-label={t("filter.clear")}
+                      className="absolute right-2 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+                      onClick={() => setSearchQuery("")}
+                      type="button"
+                    >
+                      <X className="size-4" />
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {availableTags.length > 0 && (
+                <div className="flex w-full sm:w-auto items-center gap-2">
+                  <label className="sr-only" htmlFor="tag-filter">
+                    {t("filter.placeholder")}
+                  </label>
+                  <select
+                    aria-label={t("filter.placeholder")}
+                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-[220px]"
+                    id="tag-filter"
+                    onChange={(event) => applyTagFilter(event.target.value || null)}
+                    value={filterTag ?? ""}
+                  >
+                    <option value="">{t("filter.placeholder")}</option>
+                    {availableTags.map((tag) => (
+                      <option key={tag} value={tag}>
+                        {tag}
+                      </option>
+                    ))}
+                  </select>
+                  {filterTag && (
+                    <button
+                      className="shrink-0 rounded-md border border-border px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      onClick={() => applyTagFilter(null)}
+                      type="button"
+                    >
+                      {t("filter.clear")}
+                    </button>
+                  )}
+                </div>
               )}
             </div>
 
-            {/* Popular Tags Quick Access */}
-            {topTags.length > 0 && (
-              <div className="flex items-center gap-2 border-l border-border/40 pl-3 ml-1 overflow-x-auto scrollbar-hide">
-                <span className="text-xs text-muted-foreground font-medium hidden sm:inline-block whitespace-nowrap">{t('filter.popular')}</span>
-                {topTags.map((tag) => (
-                  <Badge
+            {availableTags.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                {orderedTags.map((tag) => (
+                  <div
                     key={tag}
-                    variant="secondary"
                     className={cn(
-                      "cursor-pointer transition-all hover:shadow-sm whitespace-nowrap",
-                      filterTag === tag 
-                        ? "bg-primary/10 text-primary border-primary/20 shadow-[0_0_10px_-3px_var(--primary)]" 
-                        : "bg-background hover:bg-muted border border-border/50 text-muted-foreground hover:text-foreground"
+                      "inline-flex items-center overflow-hidden rounded-full border text-xs shadow-sm transition-colors",
+                      filterTag === tag
+                        ? "border-primary/30 bg-primary/10 text-primary"
+                        : "border-border/60 bg-background text-muted-foreground",
                     )}
-                    onClick={() => applyTagFilter(tag === filterTag ? null : tag)}
                   >
-                    {tag}
-                  </Badge>
+                    <button
+                      className={cn(
+                        "px-3 py-1.5 hover:bg-muted/60",
+                        filterTag === tag && "hover:bg-primary/5",
+                      )}
+                      onClick={() => applyTagFilter(tag === filterTag ? null : tag)}
+                      type="button"
+                    >
+                      {tag}
+                    </button>
+                    <button
+                      aria-label={t("filter.delete_tag", { tag })}
+                      className="border-l border-border/50 px-2 py-1.5 hover:bg-destructive/10 hover:text-destructive"
+                      onClick={() => {
+                        if (window.confirm(t("filter.delete_tag_confirm", { tag }))) {
+                          deleteWorkspaceTag(tag);
+                        }
+                      }}
+                      type="button"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  </div>
                 ))}
               </div>
             )}
@@ -220,7 +313,7 @@ function TwoFactorApp() {
         )}
 
         {/* List Section */}
-        <div className="space-y-3 pb-20">
+        <div className="space-y-2.5 pb-20">
              {accounts.length === 0 ? (
                  <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -238,8 +331,29 @@ function TwoFactorApp() {
              ) : filteredAccounts.length === 0 ? (
                  <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
                      <FilterX className="h-12 w-12 opacity-20" />
-                     <p>{t('filter.no_match')} <span className="font-semibold text-foreground">{filterTag}</span></p>
-                     <button onClick={() => applyTagFilter(null)} className="text-primary hover:underline text-sm font-medium">{t('filter.clear')}</button>
+                     {searchQuery ? (
+                       <p>
+                         {t("app.search_placeholder")}:{" "}
+                         <span className="font-semibold text-foreground">{searchQuery}</span>
+                       </p>
+                     ) : (
+                       <p>
+                         {t('filter.no_match')}{" "}
+                         <span className="font-semibold text-foreground">{filterTag}</span>
+                       </p>
+                     )}
+                     <div className="flex gap-3">
+                       {filterTag && (
+                         <button onClick={() => applyTagFilter(null)} className="text-primary hover:underline text-sm font-medium">
+                           {t('filter.clear')}
+                         </button>
+                       )}
+                       {searchQuery && (
+                         <button onClick={() => setSearchQuery("")} className="text-primary hover:underline text-sm font-medium">
+                           {t('filter.clear')}
+                         </button>
+                       )}
+                     </div>
                  </div>
              ) : (
                 <AccountSortableList
