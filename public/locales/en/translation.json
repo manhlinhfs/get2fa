@@ -3,7 +3,16 @@
     "title": "get2fa",
     "ready": "No accounts yet.",
     "enter_key": "Paste a secret key above to add your first account.",
-    "search_placeholder": "Search accounts"
+    "search_placeholder": "Search accounts",
+    "quick_backup": "Quick Backup"
+  },
+  "sort": {
+    "label": "Sort accounts",
+    "manual": "Manual order",
+    "name_asc": "Name A-Z",
+    "name_desc": "Name Z-A",
+    "newest": "Newest first",
+    "oldest": "Oldest first"
   },
   "filter": {
     "placeholder": "Filter by tag...",

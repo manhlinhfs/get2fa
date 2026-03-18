@@ -3,7 +3,16 @@
     "title": "get2fa",
     "ready": "还没有账户。",
     "enter_key": "在上方粘贴密钥以添加第一个账户。",
-    "search_placeholder": "搜索账户"
+    "search_placeholder": "搜索账户",
+    "quick_backup": "快速备份"
+  },
+  "sort": {
+    "label": "排序账户",
+    "manual": "手动顺序",
+    "name_asc": "名称 A-Z",
+    "name_desc": "名称 Z-A",
+    "newest": "最新优先",
+    "oldest": "最旧优先"
   },
   "filter": {
     "placeholder": "按标签筛选...",

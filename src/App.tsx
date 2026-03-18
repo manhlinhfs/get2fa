@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { DataBackup } from "@/components/data-backup";
 import { HelpDialog } from "@/components/help-dialog";
 import { useGet2FAApp } from "@/hooks/use-get2fa-app";
-import { FilterX, Search, Sparkles, X } from "lucide-react";
+import { ArrowDownAZ, Download, FilterX, Search, Sparkles, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -11,12 +11,14 @@ import { AddAccountForm } from "@/components/add-account-form";
 import { AccountSortableList } from "@/components/account-sortable-list";
 import { WorkspaceSwitcher } from "@/components/workspace-switcher";
 import { WorkspaceDialog } from "@/components/workspace-dialog";
-import { Toaster } from "sonner";
+import { toast, Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { parseImportedBackup } from "@/lib/get2fa-backup";
+import { createBackupFilename, downloadBackup } from "@/lib/backup-download";
 
 const APP_LOGO_SRC = "/icon.svg?v=20260317-3";
+type SortMode = "manual" | "label-asc" | "label-desc" | "created-desc" | "created-asc";
 
 function TwoFactorApp() {
   const { t } = useTranslation();
@@ -44,6 +46,7 @@ function TwoFactorApp() {
   } = useGet2FAApp();
   const [workspaceDialogMode, setWorkspaceDialogMode] = useState<"create" | "rename">("create");
   const [workspaceDialogOpen, setWorkspaceDialogOpen] = useState(false);
+  const [sortMode, setSortMode] = useState<SortMode>("manual");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const applyTagFilter = (nextTag: string | null) => {
@@ -68,10 +71,35 @@ function TwoFactorApp() {
       return matchesTag && matchesSearch;
     });
   }, [accounts, filterTag, searchQuery]);
+  const sortedAccounts = useMemo(() => {
+    if (sortMode === "manual") {
+      return filteredAccounts;
+    }
+
+    const nextAccounts = [...filteredAccounts];
+
+    switch (sortMode) {
+      case "label-asc":
+        return nextAccounts.sort((left, right) => left.label.localeCompare(right.label));
+      case "label-desc":
+        return nextAccounts.sort((left, right) => right.label.localeCompare(left.label));
+      case "created-desc":
+        return nextAccounts.sort(
+          (left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
+        );
+      case "created-asc":
+        return nextAccounts.sort(
+          (left, right) => new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime(),
+        );
+      default:
+        return nextAccounts;
+    }
+  }, [filteredAccounts, sortMode]);
   const orderedTags = useMemo(
     () => [...topTags, ...availableTags.filter((tag) => !topTags.includes(tag))],
     [availableTags, topTags],
   );
+  const isManualSort = sortMode === "manual";
 
   useEffect(() => {
     const handleSearchShortcut = (event: KeyboardEvent) => {
@@ -122,6 +150,18 @@ function TwoFactorApp() {
       kind: "bundle" as const,
       count: Math.max(nextAppData.workspaces.length - previousCount, 0),
     };
+  };
+
+  const handleQuickBackup = () => {
+    try {
+      downloadBackup(
+        exportSelectedWorkspaces([activeWorkspace.id]),
+        createBackupFilename("get2fa-backup"),
+      );
+      toast.success(t("backup.export_success"));
+    } catch {
+      toast.error(t("backup.export_error"));
+    }
   };
 
   return (
@@ -208,9 +248,9 @@ function TwoFactorApp() {
             className="flex flex-col gap-3 py-2"
             initial={{ opacity: 0, y: 10 }}
           >
-            <div className="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+            <div className="grid w-full gap-2 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)_auto] lg:items-center">
               {accounts.length > 0 && (
-                <div className="relative w-full sm:w-[280px]">
+                <div className="relative w-full min-w-0">
                   <label className="sr-only" htmlFor="account-search">
                     {t("app.search_placeholder")}
                   </label>
@@ -240,13 +280,13 @@ function TwoFactorApp() {
               )}
 
               {availableTags.length > 0 && (
-                <div className="flex w-full sm:w-auto items-center gap-2">
+                <div className="flex w-full min-w-0 items-center gap-2">
                   <label className="sr-only" htmlFor="tag-filter">
                     {t("filter.placeholder")}
                   </label>
                   <select
                     aria-label={t("filter.placeholder")}
-                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-[220px]"
+                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-[220px] lg:w-full"
                     id="tag-filter"
                     onChange={(event) => applyTagFilter(event.target.value || null)}
                     value={filterTag ?? ""}
@@ -267,6 +307,38 @@ function TwoFactorApp() {
                       {t("filter.clear")}
                     </button>
                   )}
+                </div>
+              )}
+
+              {accounts.length > 0 && (
+                <div className="flex w-full flex-wrap items-center gap-2 lg:w-auto lg:justify-end">
+                  <label className="sr-only" htmlFor="account-sort">
+                    {t("sort.label")}
+                  </label>
+                  <div className="relative min-w-0 flex-1 lg:w-[180px] lg:flex-none">
+                    <ArrowDownAZ className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <select
+                      aria-label={t("sort.label")}
+                      className="h-10 w-full rounded-md border border-input bg-background pl-9 pr-3 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                      id="account-sort"
+                      onChange={(event) => setSortMode(event.target.value as SortMode)}
+                      value={sortMode}
+                    >
+                      <option value="manual">{t("sort.manual")}</option>
+                      <option value="label-asc">{t("sort.name_asc")}</option>
+                      <option value="label-desc">{t("sort.name_desc")}</option>
+                      <option value="created-desc">{t("sort.newest")}</option>
+                      <option value="created-asc">{t("sort.oldest")}</option>
+                    </select>
+                  </div>
+                  <button
+                    className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-md border border-border bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-muted"
+                    onClick={handleQuickBackup}
+                    type="button"
+                  >
+                    <Download className="size-4" />
+                    <span>{t("app.quick_backup")}</span>
+                  </button>
                 </div>
               )}
             </div>
@@ -360,10 +432,11 @@ function TwoFactorApp() {
                   accounts={accounts}
                   availableTags={availableTags}
                   currentWorkspaceId={activeWorkspace.id}
+                  isSortable={isManualSort}
                   onRemove={removeAccount}
                   onReorder={reorderAccounts}
                   onUpdate={updateAccount}
-                  visibleAccounts={filteredAccounts}
+                  visibleAccounts={sortedAccounts}
                   workspaces={workspaces}
                 />
              )}

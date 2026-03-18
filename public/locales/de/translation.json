@@ -3,7 +3,16 @@
     "title": "get2fa",
     "ready": "Noch keine Konten.",
     "enter_key": "Fügen Sie oben einen geheimen Schlüssel ein, um Ihr erstes Konto hinzuzufügen.",
-    "search_placeholder": "Konten suchen"
+    "search_placeholder": "Konten suchen",
+    "quick_backup": "Schnell-Backup"
+  },
+  "sort": {
+    "label": "Konten sortieren",
+    "manual": "Manuelle Reihenfolge",
+    "name_asc": "Name A-Z",
+    "name_desc": "Name Z-A",
+    "newest": "Neueste zuerst",
+    "oldest": "Älteste zuerst"
   },
   "filter": {
     "placeholder": "Nach Tag filtern...",

@@ -13,6 +13,7 @@ import { BackupCenterDialog } from "@/components/backup-center-dialog";
 import { Button } from "@/components/ui/button";
 import type { Workspace } from "@/lib/get2fa-data";
 import { useTranslation } from "react-i18next";
+import { createBackupFilename, downloadBackup } from "@/lib/backup-download";
 
 interface BackupImportResult {
   kind: "bundle" | "legacy";
@@ -25,25 +26,6 @@ interface DataBackupProps {
   onExportCurrentWorkspace: () => unknown;
   onExportSelectedWorkspaces: (workspaceIds: string[]) => unknown;
   onImport: (payload: unknown) => BackupImportResult;
-}
-
-function createBackupFilename(prefix: string) {
-  return `${prefix}-${new Date().toISOString().split("T")[0]}.json`;
-}
-
-function downloadBackup(payload: unknown, filename: string) {
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {
-    type: "application/json",
-  });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-
-  anchor.href = url;
-  anchor.download = filename;
-  document.body.appendChild(anchor);
-  anchor.click();
-  document.body.removeChild(anchor);
-  URL.revokeObjectURL(url);
 }
 
 export function DataBackup({

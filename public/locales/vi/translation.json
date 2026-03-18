@@ -3,7 +3,16 @@
     "title": "get2fa",
     "ready": "Chưa có tài khoản nào.",
     "enter_key": "Dán khóa bí mật ở trên để thêm tài khoản đầu tiên.",
-    "search_placeholder": "Tìm tài khoản"
+    "search_placeholder": "Tìm tài khoản",
+    "quick_backup": "Tải nhanh backup"
+  },
+  "sort": {
+    "label": "Sắp xếp tài khoản",
+    "manual": "Thứ tự thủ công",
+    "name_asc": "Tên A-Z",
+    "name_desc": "Tên Z-A",
+    "newest": "Mới nhất trước",
+    "oldest": "Cũ nhất trước"
   },
   "filter": {
     "placeholder": "Lọc theo thẻ...",

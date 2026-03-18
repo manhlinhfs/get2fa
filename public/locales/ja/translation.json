@@ -3,7 +3,16 @@
     "title": "get2fa",
     "ready": "まだアカウントはありません。",
     "enter_key": "上にシークレットキーを貼り付けて最初のアカウントを追加してください。",
-    "search_placeholder": "アカウントを検索"
+    "search_placeholder": "アカウントを検索",
+    "quick_backup": "クイックバックアップ"
+  },
+  "sort": {
+    "label": "アカウントを並び替え",
+    "manual": "手動順",
+    "name_asc": "名前 A-Z",
+    "name_desc": "名前 Z-A",
+    "newest": "新しい順",
+    "oldest": "古い順"
   },
   "filter": {
     "placeholder": "タグでフィルタリング...",

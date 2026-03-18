@@ -10,10 +10,17 @@ import type { AppData } from "@/lib/get2fa-data";
 const translations: Record<string, string> = {
   "app.title": "get2fa",
   "app.search_placeholder": "Search accounts",
+  "app.quick_backup": "Quick Backup",
   "filter.placeholder": "Filter by tag...",
   "filter.clear": "Clear filter",
   "filter.delete_tag": "Delete tag {{tag}}",
   "filter.delete_tag_confirm": "Delete tag {{tag}} from this workspace?",
+  "sort.label": "Sort accounts",
+  "sort.manual": "Manual order",
+  "sort.name_asc": "Name A-Z",
+  "sort.name_desc": "Name Z-A",
+  "sort.newest": "Newest first",
+  "sort.oldest": "Oldest first",
   "workspace.switcher": "Workspace",
   "workspace.create": "New workspace",
   "workspace.rename": "Rename workspace",
@@ -318,6 +325,62 @@ describe("workspace app ui", () => {
     ]);
   });
 
+  it("downloads the active workspace from the quick backup button", async () => {
+    const user = userEvent.setup();
+    const capturedBlobs: Blob[] = [];
+    const downloads: string[] = [];
+    const expectedFilename = `get2fa-backup-${new Date().toISOString().split("T")[0]}.json`;
+
+    vi.mocked(URL.createObjectURL).mockImplementation((blob) => {
+      capturedBlobs.push(blob as Blob);
+      return "blob:quick-backup";
+    });
+    vi.mocked(HTMLAnchorElement.prototype.click).mockImplementation(function click(this: HTMLAnchorElement) {
+      downloads.push(this.download);
+    });
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "work",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [],
+        },
+        {
+          id: "work",
+          name: "Work",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "aws",
+              secret: "BBBB",
+              issuer: "AWS",
+              label: "AWS",
+              tags: ["cloud"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /quick backup/i }));
+
+    expect(capturedBlobs).toHaveLength(1);
+    expect(downloads).toEqual([expectedFilename]);
+    const payload = JSON.parse(await capturedBlobs[0].text());
+    expect(payload.workspaces).toHaveLength(1);
+    expect(payload.workspaces[0].name).toBe("Work");
+  });
+
   it("imports a legacy payload into the active workspace", async () => {
     const user = userEvent.setup();
 
@@ -579,6 +642,70 @@ describe("workspace app ui", () => {
     await user.click(screen.getByRole("button", { name: "work" }));
 
     expect(document.body.style.overflow).toBe("");
+  });
+
+  it("sorts visible accounts by name and disables drag handles outside manual mode", async () => {
+    const user = userEvent.setup();
+
+    seedAppData({
+      version: 1,
+      currentWorkspaceId: "default",
+      workspaces: [
+        {
+          id: "default",
+          name: "Default",
+          createdAt: "2026-03-15T00:00:00.000Z",
+          updatedAt: "2026-03-15T00:00:00.000Z",
+          accounts: [
+            {
+              id: "vercel",
+              secret: "AAAA",
+              issuer: "Vercel",
+              label: "Vercel",
+              tags: ["work"],
+              createdAt: "2026-03-15T00:00:00.000Z",
+              updatedAt: "2026-03-15T00:00:00.000Z",
+            },
+            {
+              id: "github",
+              secret: "BBBB",
+              issuer: "GitHub",
+              label: "GitHub",
+              tags: ["work"],
+              createdAt: "2026-03-14T00:00:00.000Z",
+              updatedAt: "2026-03-14T00:00:00.000Z",
+            },
+            {
+              id: "aws",
+              secret: "CCCC",
+              issuer: "AWS",
+              label: "AWS",
+              tags: ["cloud"],
+              createdAt: "2026-03-13T00:00:00.000Z",
+              updatedAt: "2026-03-13T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    expect(Array.from(document.querySelectorAll("h3")).map((node) => node.textContent)).toEqual([
+      "Vercel",
+      "GitHub",
+      "AWS",
+    ]);
+    expect(screen.getByRole("button", { name: /reorder vercel/i })).toBeInTheDocument();
+
+    await user.selectOptions(screen.getByRole("combobox", { name: /sort accounts/i }), "label-asc");
+
+    expect(Array.from(document.querySelectorAll("h3")).map((node) => node.textContent)).toEqual([
+      "AWS",
+      "GitHub",
+      "Vercel",
+    ]);
+    expect(screen.queryByRole("button", { name: /reorder aws/i })).not.toBeInTheDocument();
   });
 
   it("updates countdown state from a shared clock source", async () => {

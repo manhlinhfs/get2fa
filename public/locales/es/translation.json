@@ -3,7 +3,16 @@
     "title": "get2fa",
     "ready": "Todavía no hay cuentas.",
     "enter_key": "Pegue una clave secreta arriba para añadir su primera cuenta.",
-    "search_placeholder": "Buscar cuentas"
+    "search_placeholder": "Buscar cuentas",
+    "quick_backup": "Copia rápida"
+  },
+  "sort": {
+    "label": "Ordenar cuentas",
+    "manual": "Orden manual",
+    "name_asc": "Nombre A-Z",
+    "name_desc": "Nombre Z-A",
+    "newest": "Más recientes primero",
+    "oldest": "Más antiguas primero"
   },
   "filter": {
     "placeholder": "Filtrar por etiqueta...",

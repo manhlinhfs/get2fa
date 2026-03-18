@@ -28,6 +28,7 @@ interface AccountSortableListProps {
   visibleAccounts: TwoFactorAccount[];
   availableTags: string[];
   currentWorkspaceId: string;
+  isSortable?: boolean;
   onRemove: (id: string) => void;
   onReorder: (orderedIds: string[]) => void;
   onUpdate: (account: TwoFactorAccount, destinationWorkspaceId?: string) => void;
@@ -109,6 +110,7 @@ export function AccountSortableList({
   visibleAccounts,
   availableTags,
   currentWorkspaceId,
+  isSortable = true,
   onRemove,
   onReorder,
   onUpdate,
@@ -172,6 +174,25 @@ export function AccountSortableList({
 
     onReorder(nextIds);
   };
+
+  if (!isSortable) {
+    return (
+      <div className="space-y-3">
+        {visibleAccounts.map((account, index) => (
+          <div data-sortable-index={index} key={account.id}>
+            <AccountRow
+              account={account}
+              availableTags={availableTags}
+              currentWorkspaceId={currentWorkspaceId}
+              onRemove={onRemove}
+              onUpdate={onUpdate}
+              workspaces={workspaces}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <DndContext
